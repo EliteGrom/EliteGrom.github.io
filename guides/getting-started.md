@@ -8,10 +8,10 @@
   <li>Navigate to the <strong>Galactic Powers</strong> tab.</li>
   <li>Find <strong>Yuri Grom</strong> in the list.</li>
   <li>Scroll to the bottom and select <strong>Pledge Allegiance</strong>.</li>
-  <li>Wait <strong>30 days</strong> before you can switch to another power (so choose wisely — but you chose Grom, so you're already right).</li>
+  <li>If you were previously pledged to another power, you may have to wait <strong>30 days</strong> before you can switch. If you are unpledged, the effect is immediate.</li>
 </ol>
 
-<div class="callout"><strong>Note:</strong> You can only be pledged to one Power at a time. Switching powers incurs a 30-day cooldown and wipes your Merits.</div>
+<div class="callout"><strong>Powerplay 2.0 Note:</strong> Merits no longer decay! Once you earn a rank, it is permanent. You can progress at your own pace without losing status.</div>
 
 <h2>Step 2 — Join the Community</h2>
 <p>The Yuri Grom community is one of the most organised Powerplay groups in the game. You'll want to join their resources immediately:</p>

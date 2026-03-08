@@ -2,46 +2,74 @@
   {
     "id": "getting-started",
     "title": "Getting Started — How to Pledge",
+    "description": "New to Powerplay? Learn how to officially join Yuri Grom and start your journey as a pledged commander.",
+    "category": "Basics",
     "diff": "Beginner",
     "time": "~5 min",
-    "up": "3306.02.01",
-    "pinned": true
+    "up": "3310.03.08",
+    "pinned": true,
+    "icon": "🚀"
   },
   {
-    "id": "fortification",
-    "title": "Reinforcement — Defending the Union",
-    "diff": "Intermediate",
-    "time": "~8 min",
-    "up": "3306.02.14"
-  },
-  {
-    "id": "combat-merits",
-    "title": "Combat Operations (PP 2.0)",
-    "diff": "Combat",
-    "time": "~10 min",
-    "up": "3306.02.28",
-    "pinned": true
-  },
-  {
-    "id": "containment-missiles",
-    "title": "Containment Missiles — Tool",
-    "diff": "Advanced",
-    "time": "~7 min",
-    "up": "3306.01.15"
+    "id": "powerplay-assignments",
+    "title": "Weekly Assignments — The 2.5x Multiplier",
+    "description": "The secret to rapid ranking. Learn how to complete your 5 weekly missions to unlock a massive merit boost.",
+    "category": "Basics",
+    "diff": "Beginner",
+    "time": "~6 min",
+    "up": "3310.03.08",
+    "pinned": true,
+    "icon": "📋"
   },
   {
     "id": "merits-ranks",
     "title": "Merits & Permanent Ranks",
+    "description": "Understand the ranking system, how to earn merits, and the exclusive rewards waiting for loyal followers.",
+    "category": "Basics",
     "diff": "Intermediate",
     "time": "~6 min",
-    "up": "3306.01.20",
-    "pinned": true
+    "up": "3310.03.08",
+    "pinned": true,
+    "icon": "🎖️"
+  },
+  {
+    "id": "combat-merits",
+    "title": "Combat Operations (PP 2.0)",
+    "description": "Master the art of combat-based merit gathering and system reinforcement through tactical engagement.",
+    "category": "Combat",
+    "diff": "Combat",
+    "time": "~10 min",
+    "up": "3310.02.28",
+    "icon": "⚔️"
+  },
+  {
+    "id": "fortification",
+    "title": "Reinforcement — Defending the Union",
+    "description": "Learn the logistics of system reinforcement to ensure our territories remain secure and profitable.",
+    "category": "Logistics",
+    "diff": "Intermediate",
+    "time": "~8 min",
+    "up": "3310.02.14",
+    "icon": "🛡️"
   },
   {
     "id": "covert-acquisition",
     "title": "Covert Acquisition — Expansion",
+    "description": "Strategically expand Yuri Grom's influence through covert operations and diplomatic pressure.",
+    "category": "Strategy",
     "diff": "Strategy",
     "time": "~9 min",
-    "up": "3306.02.05"
+    "up": "3310.02.05",
+    "icon": "🛰️"
+  },
+  {
+    "id": "containment-missiles",
+    "title": "Containment Missiles — Tool",
+    "description": "A deep dive into Grom's signature weapon: how to use it effectively in PvP and PvE encounters.",
+    "category": "Combat",
+    "diff": "Advanced",
+    "time": "~7 min",
+    "up": "3310.01.15",
+    "icon": "🚀"
   }
 ]

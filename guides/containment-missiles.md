@@ -1,5 +1,11 @@
 <h2>What Are Containment Missiles?</h2>
+<img src="images/bannerenlist.png" alt="Containment Missile Demonstration" style="width: 100%; margin: 20px 0; border: 1px solid var(--border-hi);">
 <p>Containment Missiles are Yuri Grom's exclusive Power Module — available only to pledged CMDRs who have reached sufficient rank. They fire a missile that, on hit, <strong>stops and reboots the target's FSD</strong>, preventing any hyperspace jumps for 15–20 seconds.</p>
+
+<h2>Field Demonstration</h2>
+<div class="video-container" style="margin: 20px 0;">
+  <iframe width="100%" height="450" src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Containment Missile Action" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
 
 <h2>Why They Matter</h2>
 <p>In PvP, escaping via FSD jump is the most reliable last resort. Containment Missiles hard-counter this. A well-timed shot pins down any target and forces them to fight or die. This is arguably the most impactful power-specific weapon in the game.</p>

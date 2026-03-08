@@ -1,0 +1,7 @@
+[
+  { "name": "Fong Wang", "type": "Stronghold", "priority": "Alpha", "status": "Fortified", "notes": "HQ proximity — defend at all costs" },
+  { "name": "Clayakarma", "type": "Stronghold", "priority": "Alpha", "status": "Fortified", "notes": "Primary HQ system" },
+  { "name": "Lei Kax", "type": "Contested", "priority": "Merit", "status": "Active Combat", "notes": "Hunting ground — combat merits" },
+  { "name": "Areklici", "type": "Contested", "priority": "Merit", "status": "Active Combat", "notes": "Secondary hunting ground" },
+  { "name": "HIP 86534", "type": "Exploited", "priority": "Expand", "status": "Secured", "notes": "Recent expansion" }
+]

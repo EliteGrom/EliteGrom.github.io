@@ -1,0 +1,1397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yuri Grom — Powerplay</title>
+<link rel="icon" type="image/png" href="images/RedBearLogo.png">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&family=Exo+2:ital,wght@0,200;0,300;0,400;0,600;1,300&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<!-- Markdown Support -->
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<style>
+/* ════════════════════════════════════════════
+   DESIGN TOKENS
+════════════════════════════════════════════ */
+:root {
+  --black:        #050304;
+  --deep:         #0d0608;
+  --dark:         #140a0b;
+  --panel:        #1a0d0e;
+
+  /* YURI GROM RED - Official Brand */
+  --brand:        #f13c3a;
+  --brand-bright: #ff5c5a;
+  --brand-dim:    #b32a28;
+  --brand-glow:   rgba(241, 60, 58, 0.3);
+  --brand-faint:  rgba(241, 60, 58, 0.07);
+
+  --gold:         #d4a840;
+  --gold-dim:     #8a6820;
+
+  --text:         #d8c8c0;
+  --text-sec:     #b0a0a0; /* Lightened from #7a5a58 for better contrast */
+  --text-dim:     #998888; /* Lightened further for better label readability */
+  --border:       rgba(241, 60, 58, 0.18);
+  --border-hi:    rgba(241, 60, 58, 0.45);
+
+  --green:        #40c870;
+  --blue:         #4090cc;
+  --orange:       #e07830;
+}
+
+/* ── REDACTED OVERLAY ── */
+.redacted-container { position: relative; overflow: hidden; border: 1px solid var(--border); }
+.redacted-overlay {
+  position: absolute; inset: 0; z-index: 10;
+  background: radial-gradient(circle at center, rgba(20, 10, 11, 0.92) 0%, rgba(5, 3, 4, 0.98) 100%);
+  backdrop-filter: blur(12px);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; overflow: hidden;
+}
+
+/* Scanning Line */
+.redacted-overlay::before {
+  content: ''; position: absolute; top: -100%; left: 0; width: 100%; height: 100%;
+  background: linear-gradient(to bottom, transparent 0%, var(--brand-glow) 50%, transparent 50.5%);
+  background-size: 100% 4px;
+  animation: scanline 6s linear infinite;
+  pointer-events: none; opacity: 0.3;
+}
+
+@keyframes scanline {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(100%); }
+}
+
+.redacted-box {
+  position: relative;
+  background: var(--brand); color: #fff; padding: 18px 50px;
+  font-family: 'Rajdhani', sans-serif; font-weight: 800; font-size: 1.8rem;
+  letter-spacing: 0.4em; text-transform: uppercase;
+  box-shadow: 0 0 40px var(--brand-glow);
+  animation: redactedGlitch 3s infinite;
+  border: 2px solid #fff;
+}
+
+/* Tech Corners for the box */
+.redacted-box::before, .redacted-box::after {
+  content: ''; position: absolute; width: 15px; height: 15px; border: 2px solid #fff;
+}
+.redacted-box::before { top: -5px; left: -5px; border-right: 0; border-bottom: 0; }
+.redacted-box::after { bottom: -5px; right: -5px; border-left: 0; border-top: 0; }
+
+@keyframes redactedGlitch {
+  0%, 90%, 100% { transform: translate(0); }
+  92% { transform: translate(-3px, 2px); }
+  94% { transform: translate(3px, -2px); }
+  96% { transform: translate(-2px, -3px); }
+}
+
+.redacted-text {
+  margin-top: 30px; font-family: 'Share Tech Mono', monospace; font-size: 0.9rem;
+  color: var(--brand-bright); max-width: 400px; line-height: 1.6;
+  text-shadow: 0 0 10px var(--brand-glow);
+  position: relative;
+}
+
+/* Decorative background elements */
+.redacted-bg-txt {
+  position: absolute; font-family: 'Share Tech Mono', monospace; font-size: 12rem;
+  color: rgba(241, 60, 58, 0.03); font-weight: 900; z-index: -1;
+  pointer-events: none; user-select: none;
+}
+
+/* ════════════════════════════════════════════
+   RESET & BASE
+════════════════════════════════════════════ */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  background: var(--black);
+  color: var(--text);
+  font-family: 'Exo 2', sans-serif;
+  font-weight: 300;
+  min-height: 100vh;
+  overflow-x: hidden;
+  cursor: default;
+}
+
+/* ── STARFIELD ── */
+#canvas-bg {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  will-change: transform;
+}
+
+/* ── NEBULA — Optimized CSS ── */
+.nebula {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(circle at 15% 25%, rgba(241, 60, 58, 0.1) 0%, transparent 40%),
+    radial-gradient(circle at 85% 65%, rgba(180, 40, 40, 0.08) 0%, transparent 35%),
+    var(--black);
+  transform: translateZ(0);
+}
+
+/* ── SCANLINES — High-Performance SVG Pattern ── */
+body::after {
+  content:''; position:fixed; inset:0; z-index:9999; pointer-events:none;
+  background-image: url("data:image/svg+xml,%3Csvg width='100%25' height='2px' viewBox='0 0 100%25 2' xmlns='http://www.w3.org/2000/svg'%3E%3Cline x1='0' y1='1' x2='100%25' y2='1' stroke='black' stroke-opacity='0.1' stroke-width='1'/%3E%3C/svg%3E");
+  opacity: 0.5;
+}
+
+/* ── LAYOUT ── */
+.wrap { position:relative; z-index:1; max-width:1280px; margin:0 auto; padding:0 28px; }
+
+/* ════════════════════════════════════════════
+   NAV
+════════════════════════════════════════════ */
+nav {
+  position: sticky; top:0; z-index:200;
+  background: rgba(5,3,4,0.92);
+  border-bottom: 1px solid var(--border);
+}
+.nav-inner {
+  max-width:1280px; margin:0 auto; padding:0 28px;
+  display:flex; align-items:center; height:58px; gap:0;
+}
+.nav-brand {
+  font-family:'Rajdhani',sans-serif; font-weight:700;
+  font-size:1.25rem; letter-spacing:0.1em; text-transform:uppercase;
+  text-decoration:none; margin-right:36px; white-space:nowrap;
+  color: var(--text);
+  display: flex; align-items: center;
+}
+.nav-brand .brand-accent, .footer-brand .brand-accent { color: var(--brand-bright); }
+.nav-brand .sub {
+  font-size:0.6em; font-weight:300; letter-spacing:0.2em;
+  color: var(--text-sec); display:block; line-height:1;
+  margin-left: 10px;
+}
+
+.nav-links { display:flex; list-style:none; flex:1; gap:0; }
+.nav-links a {
+  display:block; padding:0 15px; height:58px; line-height:58px;
+  font-family:'Rajdhani',sans-serif; font-weight:600;
+  font-size:0.77rem; letter-spacing:0.1em; text-transform:uppercase;
+  color: var(--text-sec); text-decoration:none;
+  transition: color .2s, background .2s;
+  border-bottom: 2px solid transparent;
+}
+.nav-links a:hover, .nav-links a.active {
+  color: var(--brand-bright);
+  background: var(--brand-faint);
+  border-bottom-color: var(--brand);
+}
+
+.nav-right { margin-left:auto; display:flex; align-items:center; gap:14px; }
+.nav-live {
+  font-family:'Share Tech Mono',monospace; font-size:0.68rem;
+  color: var(--green); display:flex; align-items:center; gap:6px;
+}
+.live-dot {
+  width:6px; height:6px; border-radius:50%;
+  background:var(--green); box-shadow:0 0 7px var(--green);
+  animation: blink 1.8s ease-in-out infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.25} }
+
+.btn-enlist {
+  font-family:'Rajdhani',sans-serif; font-weight:700;
+  font-size:0.75rem; letter-spacing:0.12em; text-transform:uppercase;
+  padding:8px 20px; background:var(--brand); border:1px solid var(--brand-bright);
+  color:#fff; cursor:pointer; text-decoration:none;
+  clip-path: polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%);
+  transition: background .2s, box-shadow .2s;
+}
+.btn-enlist:hover { background:var(--brand-bright); box-shadow:0 0 20px var(--brand-glow); }
+
+/* ════════════════════════════════════════════
+   PAGE SYSTEM — show/hide pages
+════════════════════════════════════════════ */
+.page { display:none; }
+.page.active { display:block; }
+
+/* ════════════════════════════════════════════
+   HERO
+════════════════════════════════════════════ */
+.hero {
+  min-height: calc(100vh - 95px);
+  display:flex; flex-direction:column; justify-content:center;
+  padding: 90px 28px 80px;
+  position:relative;
+  background: 
+    linear-gradient(rgba(5, 3, 4, 0.5), rgba(5, 3, 4, 0.8)), 
+    url('images/WallpaperNoText.png') no-repeat 85% 15% / 85%;
+}
+.hero-badge {
+  font-family:'Share Tech Mono',monospace; font-size:0.7rem;
+  letter-spacing:0.25em; color: var(--brand); text-transform:uppercase;
+  margin-bottom:18px;
+  opacity:0; animation: fadeUp .7s .15s forwards;
+}
+.hero-title {
+  font-family:'Rajdhani',sans-serif; font-weight:700;
+  font-size: clamp(3.8rem,9vw,8.5rem);
+  line-height:.88; letter-spacing:-.01em; text-transform:uppercase;
+  margin-bottom:10px;
+  opacity:0; animation: fadeUp .7s .3s forwards;
+}
+.hero-title .t1 { color:#fff; }
+.hero-title .t2 {
+  color: var(--brand-bright);
+  text-shadow: 0 0 60px rgba(241, 60, 58, 0.55), 0 0 120px rgba(241, 60, 58, 0.25);
+}
+.hero-title .t3 {
+  display:block; font-size:.42em; font-weight:300;
+  letter-spacing:.22em; color: var(--gold); margin-top:6px;
+}
+.hero-logo-main {
+  max-width: 900px;
+  width: 100%;
+  height: auto;
+  display: block;
+  margin-left: 0;
+  margin-right: auto;
+  margin-bottom: 30px;
+  filter: drop-shadow(0 0 20px rgba(241, 60, 58, 0.4));
+  opacity: 0;
+  animation: fadeUp .7s .3s forwards;
+}
+@media (max-width: 768px) {
+  .hero-logo-main { max-width: 100%; margin-bottom: 20px; }
+}
+.hero-sub {
+  font-size:1rem; color: var(--text-sec); max-width:540px;
+  line-height:1.75; margin-bottom:38px;
+  opacity:0; animation: fadeUp .7s .45s forwards;
+}
+.hero-ctas {
+  display:flex; gap:14px; flex-wrap:wrap;
+  opacity:0; animation: fadeUp .7s .6s forwards;
+}
+.btn-primary {
+  font-family:'Rajdhani',sans-serif; font-weight:700;
+  font-size:.85rem; letter-spacing:.12em; text-transform:uppercase;
+  padding:14px 38px; background:var(--brand); border:1px solid var(--brand-bright);
+  color:#fff; cursor:pointer; text-decoration:none;
+  clip-path: polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);
+  transition: background .25s, box-shadow .25s;
+}
+.btn-primary:hover { background:var(--brand-bright); box-shadow:0 0 28px var(--brand-glow); }
+.btn-ghost {
+  font-family:'Rajdhani',sans-serif; font-weight:600;
+  font-size:.85rem; letter-spacing:.12em; text-transform:uppercase;
+  padding:14px 38px; background:transparent; border:1px solid var(--border-hi);
+  color: var(--text); cursor:pointer; text-decoration:none;
+  clip-path: polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);
+  transition: border-color .25s, color .25s, background .25s;
+}
+.btn-ghost:hover { border-color:var(--brand-bright); color:var(--brand-bright); background:var(--brand-faint); }
+
+/* Stats strip */
+.hero-stats {
+  position:absolute; bottom: 140px; left:0; right:0; padding:0 28px;
+  opacity:0; animation: fadeUp .7s .75s forwards;
+}
+
+/* Scroll Indicator */
+.scroll-hint {
+  position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center;
+  opacity: 0; animation: fadeUp .7s 1.2s forwards;
+}
+.scroll-arrow {
+  width: 20px; height: 20px; border-right: 1px solid var(--brand); border-bottom: 1px solid var(--brand);
+  transform: rotate(45deg);
+  animation: arrowPulse 2s infinite;
+}
+@keyframes arrowPulse { 
+  0% { opacity: 0; transform: rotate(45deg) translate(-5px, -5px); } 
+  50% { opacity: 1; } 
+  100% { opacity: 0; transform: rotate(45deg) translate(5px, 5px); } 
+}
+.stats-strip {
+  max-width:1280px; margin:0 auto;
+  display:flex; border:1px solid var(--border);
+  background: rgba(20,10,11,0.8); backdrop-filter:blur(10px);
+}
+.stat { flex:1; padding:16px 22px; border-right:1px solid var(--border); }
+.stat:last-child { border-right:none; }
+.stat-lbl {
+  font-family:'Share Tech Mono',monospace; font-size:.6rem;
+  letter-spacing:.18em; color: var(--text-dim); text-transform:uppercase; margin-bottom:4px;
+}
+.stat-val {
+  font-family:'Rajdhani',sans-serif; font-weight:700; font-size:1.45rem;
+  color: var(--brand-bright);
+}
+.stat-val.gold { color: var(--gold); }
+.stat-val.green { color: var(--green); }
+#stat-hq a { color: inherit; text-decoration: none; border-bottom: 1px dashed rgba(241, 60, 58, 0.3); transition: border-color 0.2s; }
+#stat-hq a:hover { border-bottom-color: var(--brand); }
+
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(22px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+/* ════════════════════════════════════════════
+   TICKER
+════════════════════════════════════════════ */
+.ticker-wrap {
+  overflow:hidden; 
+  position: sticky; 
+  top: 58px; /* Stick below nav (58px) */
+  z-index: 150;
+  border-top:1px solid var(--border); 
+  border-bottom:1px solid var(--border);
+  background: rgba(13, 6, 8, 0.95); 
+  padding:8px 0;
+  will-change: transform;
+}
+.ticker-wrap::before, .ticker-wrap::after {
+  content:''; position:absolute; top:0; bottom:0; width:80px; z-index:2;
+}
+.ticker-wrap::before { left:0; background:linear-gradient(90deg,rgba(13,6,8,1),transparent); }
+.ticker-wrap::after  { right:0; background:linear-gradient(90deg,transparent,rgba(13,6,8,1)); }
+.ticker-lbl {
+  position:absolute; left:0; top:0; bottom:0; z-index:3;
+  background: var(--brand); padding:0 16px;
+  display:flex; align-items:center;
+  font-family:'Rajdhani',sans-serif; font-weight:700;
+  font-size:.68rem; letter-spacing:.15em; color:#fff; white-space:nowrap;
+}
+.ticker-track { 
+  display:flex; 
+  padding-left:130px; 
+  white-space:nowrap;
+  animation: scrollTicker 25s linear infinite;
+  will-change: transform;
+  transform: translate3d(0,0,0);
+  backface-visibility: hidden;
+}
+@keyframes scrollTicker {
+  0% { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(-50%, 0, 0); }
+}
+.tick {
+  font-family:'Share Tech Mono',monospace; font-size:.68rem;
+  color: var(--text-sec); padding:0 52px 0 0;
+}
+.tick .hi  { color: var(--brand-bright); }
+.tick .ok  { color: var(--green); }
+.tick .warn{ color: var(--brand); }
+@keyframes scroll { 
+  0% { transform: translate3d(0, 0, 0); } 
+  100% { transform: translate3d(-50%, 0, 0); } 
+}
+
+/* ════════════════════════════════════════════
+   SECTION COMMON
+════════════════════════════════════════════ */
+section { padding: 80px 0; }
+.sec-eye {
+  font-family:'Share Tech Mono',monospace; font-size:.67rem;
+  letter-spacing:.26em; color: var(--brand); text-transform:uppercase;
+  margin-bottom:10px; display:flex; align-items:center; gap:12px;
+}
+.sec-eye::after { content:''; width:36px; height:1px; background:var(--brand); opacity:.5; }
+.sec-title {
+  font-family:'Rajdhani',sans-serif; font-weight:700; font-size:2.1rem;
+  letter-spacing:.05em; text-transform:uppercase; color:#fff;
+}
+.sec-desc { margin-top:10px; font-size:.93rem; color: var(--text-sec); line-height:1.75; max-width:580px; }
+.divider { height:1px; background:linear-gradient(90deg,transparent,var(--border-hi),transparent); }
+
+/* ════════════════════════════════════════════
+   CARDS GRID
+════════════════════════════════════════════ */
+.cards-grid {
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(270px,1fr));
+  gap:1px; background:var(--border); border:1px solid var(--border);
+}
+.card {
+  background: var(--dark); padding:28px; position:relative; overflow:hidden;
+  transition: background .2s; cursor:pointer;
+}
+.card::before {
+  content:''; position:absolute; top:0; left:0; width:3px; height:100%;
+  background: var(--brand-bright); opacity:0; transition: opacity .2s;
+}
+.card:hover { background: rgba(30,14,15,.95); }
+.card:hover::before { opacity:1; }
+.card-tag {
+  font-family:'Share Tech Mono',monospace; font-size:.62rem;
+  letter-spacing:.14em; color: var(--text-dim); margin-bottom:10px;
+}
+.card-title {
+  font-family:'Rajdhani',sans-serif; font-weight:700; font-size:1.05rem;
+  letter-spacing:.06em; text-transform:uppercase; color: var(--text); margin-bottom:8px;
+}
+.card-body { font-size:.82rem; color: var(--text-sec); line-height:1.6; }
+.card-footer {
+  margin-top:18px; display:flex; justify-content:space-between; align-items:center;
+}
+.badge {
+  font-family:'Rajdhani',sans-serif; font-weight:600; font-size:.68rem;
+  letter-spacing:.1em; text-transform:uppercase;
+  padding:3px 10px; border:1px solid;
+}
+.badge-brand  { color:var(--brand-bright); border-color:rgba(241,60,58,.4); background:rgba(241,60,58,.08); }
+.badge-red    { color:#e83348; border-color:rgba(232,51,72,.4); background:rgba(232,51,72,.08); }
+.badge-green  { color:var(--green);      border-color:rgba(64,200,112,.4); background:rgba(64,200,112,.08); }
+.badge-gold   { color:var(--gold);       border-color:rgba(212,168,64,.4); background:rgba(212,168,64,.08); }
+.badge-blue   { color:var(--blue);       border-color:rgba(64,144,204,.4); background:rgba(64,144,204,.08); }
+.badge-grey   { color:var(--text-sec);   border-color:rgba(122,90,88,.35); background:transparent; }
+
+/* ════════════════════════════════════════════
+   TABLE
+════════════════════════════════════════════ */
+.data-table {
+  width:100%; border-collapse:collapse;
+  border:1px solid var(--border); background: var(--dark);
+}
+.data-table th {
+  font-family:'Rajdhani',sans-serif; font-weight:700; font-size:.72rem;
+  letter-spacing:.14em; text-transform:uppercase; color: var(--text-sec);
+  background: rgba(30,14,15,.7); padding:12px 18px; text-align:left;
+  border-bottom:1px solid var(--border);
+}
+.data-table td {
+  font-family:'Share Tech Mono',monospace; font-size:.72rem;
+  color: var(--text); padding:11px 18px;
+  border-bottom:1px solid rgba(241,60,58,0.06);
+}
+.data-table tr:hover td { background: var(--brand-faint); }
+.data-table .sys { color: var(--brand-bright); }
+.data-table .ok  { color: var(--green); }
+.data-table .warn{ color: var(--orange); }
+.data-table .dim  { color: var(--text-sec); }
+
+/* ════════════════════════════════════════════
+   GUIDES LIST
+════════════════════════════════════════════ */
+.guide-list { display:flex; flex-direction:column; gap:1px; background:var(--border); border:1px solid var(--border); }
+.guide-row {
+  background: var(--dark); display:grid; grid-template-columns:52px 1fr auto;
+  align-items:center; border-left:3px solid transparent;
+  transition: border-color .2s, background .2s; cursor:pointer;
+}
+.guide-row:hover { background: rgba(30,14,15,.95); border-left-color: var(--brand); }
+.guide-num { padding:22px 0 22px 18px; font-family:'Share Tech Mono',monospace; font-size:.68rem; color:var(--text-dim); }
+.guide-info { padding:22px 22px; }
+.guide-name {
+  font-family:'Rajdhani',sans-serif; font-weight:700; font-size:1rem;
+  letter-spacing:.06em; text-transform:uppercase; color: var(--text); margin-bottom:4px;
+}
+.guide-desc { font-size:.8rem; color: var(--text-sec); line-height:1.5; }
+.guide-meta { padding:22px 22px; display:flex; flex-direction:column; align-items:flex-end; gap:6px; }
+.guide-diff { font-family:'Share Tech Mono',monospace; font-size:.62rem; color: var(--text-dim); }
+
+/* ════════════════════════════════════════════
+   GUIDE DETAIL VIEW
+════════════════════════════════════════════ */
+.guide-detail { display:none; padding:70px 0; }
+.guide-detail.active { display:block; }
+.guide-back {
+  font-family:'Rajdhani',sans-serif; font-weight:600; font-size:.78rem;
+  letter-spacing:.1em; text-transform:uppercase;
+  color: var(--brand); cursor:pointer; margin-bottom:30px;
+  display:inline-flex; align-items:center; gap:8px; text-decoration:none;
+  transition: color .2s;
+}
+.guide-back:hover { color: var(--brand-bright); }
+.guide-back::before { content:'←'; }
+.guide-content {
+  background: var(--dark); border:1px solid var(--border); padding:44px 48px;
+  max-width:860px;
+}
+/* GUIDE CONTENT MEDIA SUPPORT */
+.guide-content img, .guide-content video, .guide-content iframe {
+  max-width: 100%; height: auto; margin: 20px 0; border: 1px solid var(--border-hi);
+  background: var(--black);
+}
+.guide-content iframe { aspect-ratio: 16/9; width: 100%; }
+
+.guide-content h1 {
+  font-family:'Rajdhani',sans-serif; font-weight:700; font-size:2rem;
+  letter-spacing:.05em; text-transform:uppercase; color:#fff; margin-bottom:6px;
+}
+.guide-content .g-meta {
+  font-family:'Share Tech Mono',monospace; font-size:.65rem;
+  color: var(--text-dim); margin-bottom:28px;
+  display:flex; gap:20px;
+}
+.guide-content h2 {
+  font-family:'Rajdhani',sans-serif; font-weight:700; font-size:1.15rem;
+  letter-spacing:.08em; text-transform:uppercase; color: var(--brand-bright);
+  margin:32px 0 12px; border-bottom:1px solid var(--border); padding-bottom:6px;
+}
+.guide-content p {
+  font-size:.9rem; line-height:1.8; color: var(--text-sec); margin-bottom:14px;
+}
+.guide-content ul, .guide-content ol {
+  padding-left:22px; margin-bottom:14px;
+}
+.guide-content li {
+  font-size:.88rem; line-height:1.75; color: var(--text-sec); margin-bottom:4px;
+}
+.guide-content .callout {
+  background: var(--brand-faint); border:1px solid var(--border-hi);
+  border-left:3px solid var(--brand); padding:16px 20px; margin:20px 0;
+  font-size:.88rem; color: var(--text);
+}
+.guide-content .callout strong { color: var(--brand-bright); }
+.guide-content code {
+  font-family:'Share Tech Mono',monospace; font-size:.8rem;
+  background: rgba(241,60,58,0.12); border:1px solid var(--border);
+  padding:2px 8px; color: var(--brand-bright);
+}
+
+/* ════════════════════════════════════════════
+   CTA BLOCK
+════════════════════════════════════════════ */
+.cta-block {
+  background: 
+    linear-gradient(rgba(241, 60, 58, 0.15), rgba(5, 3, 4, 0.85)), 
+    url('images/WallpaperNoText.png') no-repeat center center / cover;
+  border:1px solid var(--border-hi); padding:80px 56px; text-align:center;
+  position:relative; overflow:hidden;
+  transition: transform 0.4s cubic-bezier(0.2, 1, 0.3, 1);
+}
+.cta-block:hover {
+  transform: scale(1.01);
+  border-color: var(--brand-bright);
+}
+.cta-block::before {
+  content:''; position:absolute; inset:0;
+  background: radial-gradient(circle at center, rgba(241, 60, 58, 0.2) 0%, transparent 70%);
+  pointer-events: none;
+}
+.cta-block h2 {
+  font-family:'Rajdhani',sans-serif; font-weight:700; font-size:2.4rem;
+  letter-spacing:.06em; text-transform:uppercase; color:#fff; margin-bottom:12px; position:relative;
+}
+.cta-block p {
+  font-size:.94rem; color: var(--text-sec); max-width:480px;
+  margin:0 auto 34px; line-height:1.75; position:relative;
+}
+.cta-btns { display:flex; justify-content:center; gap:14px; position:relative; }
+
+/* ════════════════════════════════════════════
+   NEWS
+════════════════════════════════════════════ */
+.news-grid {
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:1px; background:var(--border); border:1px solid var(--border);
+}
+.news-card {
+  background: var(--dark); padding:28px;
+  transition: background .2s; cursor:pointer;
+}
+.news-card:hover { background: rgba(30,14,15,.95); }
+.news-card.feat {
+  grid-column:1/-1;
+  border-bottom:1px solid var(--border);
+  display:grid; grid-template-columns:1fr 200px; gap:28px; align-items:center;
+}
+.news-date {
+  font-family:'Share Tech Mono',monospace; font-size:.63rem;
+  letter-spacing:.14em; color:var(--text-dim); margin-bottom:8px;
+}
+.news-title {
+  font-family:'Rajdhani',sans-serif; font-weight:700; font-size:1.1rem;
+  letter-spacing:.04em; text-transform:uppercase; color:#fff; margin-bottom:8px; line-height:1.3;
+}
+.news-body { 
+  font-size:.83rem; color:var(--text-sec); line-height:1.65;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.news-card.expanded .news-body { 
+  display: block; 
+  -webkit-line-clamp: initial; 
+}
+.news-more {
+  display:inline-flex; align-items:center; gap:5px; margin-top:14px;
+  font-family:'Rajdhani',sans-serif; font-weight:600; font-size:.76rem;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--brand); text-decoration:none;
+  transition: color .2s;
+}
+.news-more:hover { color:var(--brand-bright); }
+.news-more::after { content:'→'; }
+.news-emblem {
+  aspect-ratio:1; background:linear-gradient(135deg,var(--dark),var(--panel));
+  border:1px solid var(--border); display:flex; align-items:center; justify-content:center;
+  position:relative; overflow:hidden;
+}
+.news-emblem::before {
+  content:''; position:absolute; inset:0;
+  background: radial-gradient(circle at 40% 40%, rgba(241,60,58,0.3),transparent 60%);
+}
+.news-emblem-txt {
+  font-family:'Rajdhani',sans-serif; font-weight:700; font-size:2.8rem;
+  letter-spacing:.12em; color:rgba(241,60,58,0.35); position:relative;
+}
+
+/* ════════════════════════════════════════════
+   POWERPLAY PAGE
+════════════════════════════════════════════ */
+.pp-progress {
+  background: var(--dark); border:1px solid var(--border);
+  padding:30px 34px; margin-bottom:36px; position:relative;
+}
+.pp-progress::after {
+  content:'CYCLE STATUS'; position:absolute; top:14px; right:22px;
+  font-family:'Share Tech Mono',monospace; font-size:.58rem;
+  letter-spacing:.18em; color:var(--text-dim);
+}
+.pp-label {
+  font-family:'Rajdhani',sans-serif; font-weight:600; font-size:.78rem;
+  letter-spacing:.12em; text-transform:uppercase; color:var(--text-sec);
+  margin-bottom:8px; display:flex; justify-content:space-between;
+}
+.pp-bar { height:3px; background:rgba(241,60,58,0.1); border:1px solid var(--border); margin-bottom:4px; }
+.pp-fill {
+  height:100%; background:linear-gradient(90deg,var(--brand),var(--brand-bright));
+  box-shadow:0 0 10px var(--brand-glow); position:relative; transition: width 1.4s cubic-bezier(.4,0,.2,1);
+}
+.pp-fill::after {
+  content:''; position:absolute; right:-1px; top:-3px;
+  width:2px; height:9px; background:#fff; box-shadow:0 0 7px rgba(255,255,255,.8);
+}
+.pp-pips { display:flex; gap:5px; margin-top:12px; }
+.pp-pip { flex:1; height:3px; background:var(--border); }
+.pp-pip.done { background:var(--brand); box-shadow:0 0 5px var(--brand-glow); }
+.pp-pip.now  { background:var(--gold); box-shadow:0 0 5px rgba(212,168,64,.5); animation:pip-pulse 1.5s ease-in-out infinite; }
+@keyframes pip-pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+/* ════════════════════════════════════════════
+   ABOUT PAGE
+════════════════════════════════════════════ */
+.about-grid {
+  display:grid; grid-template-columns:3fr 2fr; gap:48px; align-items:start;
+}
+.lore-block { font-size:.9rem; color:var(--text-sec); line-height:1.85; }
+.lore-block p { margin-bottom:16px; }
+.lore-block strong { color: var(--text); font-weight:600; }
+.lore-block .quote {
+  border-left:3px solid var(--brand); padding:14px 20px; margin:24px 0;
+  font-style:italic; font-size:.92rem; color:var(--text);
+  background: var(--brand-faint);
+}
+.info-panel { background:var(--dark); border:1px solid var(--border); }
+.info-row {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:14px 20px; border-bottom:1px solid var(--border);
+}
+.info-row:last-child { border-bottom:none; }
+.info-key { font-family:'Share Tech Mono',monospace; font-size:.65rem; letter-spacing:.1em; color:var(--text-dim); text-transform:uppercase; }
+.info-val { font-family:'Rajdhani',sans-serif; font-weight:600; font-size:.85rem; color:var(--text); letter-spacing:.04em; }
+.info-val.red { color:var(--brand-bright); }
+
+/* ════════════════════════════════════════════
+   FOOTER
+════════════════════════════════════════════ */
+footer {
+  border-top:1px solid var(--border); padding:36px 0;
+  background: rgba(5,3,4,.85);
+  position: relative; z-index: 10;
+}
+.footer-inner {
+  max-width:1280px; margin:0 auto; padding:0 28px;
+  display:flex; justify-content:space-between; align-items:center; gap:20px; flex-wrap:wrap;
+}
+.footer-brand {
+  font-family:'Rajdhani',sans-serif; font-weight:700; font-size:1.05rem;
+  letter-spacing:.12em; text-transform:uppercase; color:var(--text-sec);
+  display: flex; align-items: center;
+}
+.footer-links { display:flex; gap:20px; list-style:none; }
+.footer-links a {
+  font-family:'Rajdhani',sans-serif; font-size:.76rem; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--text-dim); text-decoration:none; transition: color .2s;
+}
+.footer-links a:hover { color:var(--brand-bright); }
+.footer-copy {
+  font-family:'Share Tech Mono',monospace; font-size:.6rem;
+  color:var(--text-dim); line-height:1.6; text-align:right;
+}
+
+/* ════════════════════════════════════════════
+   SCROLLBAR
+════════════════════════════════════════════ */
+::-webkit-scrollbar { width:5px; }
+::-webkit-scrollbar-track { background:var(--black); }
+::-webkit-scrollbar-thumb { background:rgba(241,60,58,0.2); }
+::-webkit-scrollbar-thumb:hover { background:var(--brand); }
+
+/* ════════════════════════════════════════════
+   RESPONSIVE
+════════════════════════════════════════════ */
+@media(max-width:768px){
+  .nav-links { display:none; }
+  .stats-strip { flex-wrap:wrap; }
+  .stat { min-width:45%; border-right:none; border-bottom:1px solid var(--border); }
+  .news-grid { grid-template-columns:1fr; }
+  .news-card.feat { grid-column:1; grid-template-columns:1fr; }
+  .about-grid { grid-template-columns:1fr; }
+  .cta-block { padding:36px 24px; }
+  .guide-content { padding:28px 24px; }
+}
+
+/* ── RETURN TO BRIDGE ── */
+#btn-top {
+  position: fixed; bottom: 30px; right: 30px; z-index: 300;
+  display: none; width: 45px; height: 45px; background: var(--brand);
+  border: 1px solid var(--brand-bright); color: #fff; cursor: pointer;
+  clip-path: polygon(10px 0%, 100% 0%, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0% 100%, 0% 10% );
+  font-family: 'Share Tech Mono', monospace; font-size: 0.8rem;
+  transition: all 0.3s; box-shadow: 0 0 15px var(--brand-glow);
+}
+#btn-top:hover { background: var(--brand-bright); transform: translateY(-3px); box-shadow: 0 0 25px var(--brand-glow); }
+
+/* News Expansion Support */
+.news-card.expanded { grid-column: 1 / -1; cursor: default; }
+.news-card.expanded .news-body { -webkit-line-clamp: initial; display: block; }
+.news-card.expanded .news-more { display: none; }
+</style>
+</head>
+<body>
+
+<div class="nebula"></div>
+<canvas id="canvas-bg"></canvas>
+
+<!-- ═══════════ NAV ═══════════ -->
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="nav-brand" data-page="home">
+      <img src="images/RedBearLogo.png" alt="Yuri Grom Logo" style="height: 32px; vertical-align: middle; margin-right: 10px;">
+      <span class="brand-accent">Yuri Grom</span>
+      <span class="sub">Powerplay</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#" data-page="home"      class="active">Home</a></li>
+      <li><a href="#" data-page="about"               >About Grom</a></li>
+      <li><a href="#" data-page="powerplay"           >Powerplay</a></li>
+      <li><a href="#" data-page="guides"              >Guides</a></li>
+      <li><a href="https://discord.com/invite/PEUp2zA" target="_blank">Discord</a></li>
+    </ul>
+    <div class="nav-right">
+      <div class="nav-live"><span class="live-dot"></span>CYCLE LIVE</div>
+      <a href="#" class="btn-enlist" data-page="about">Pledge Allegiance</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════
+     PAGE: HOME
+═══════════════════════════════════════ -->
+<div id="page-home" class="page active">
+
+  <!-- HERO -->
+  <section class="hero" id="home-hero">
+    <div class="wrap" style="position:relative;z-index:1">
+      <div class="hero-badge">// Yuri Grom · Independent Power · Clayakarma HQ</div>
+      <img src="images/JustGromTextLogo.png" alt="Yuri Grom: Freedom Among the Stars" class="hero-logo-main">
+      <p class="hero-sub">
+        Former Federal Admiral. Self-proclaimed Dictator, Yuri Grom. Conqueror of corruption. Join the most battle-hardened independent power in the galaxy and fight for true freedom.
+      </p>
+      <div class="hero-ctas">
+        <a href="#" class="btn-primary" data-page="guides">Operational Guides</a>
+        <a href="#" class="btn-ghost"   data-page="powerplay">This Cycle's Objectives</a>
+      </div>
+    </div>
+    <div class="hero-stats">
+      <div class="stats-strip">
+        <div class="stat"><div class="stat-lbl">Pledged CMDRs</div><div class="stat-val" id="stat-cmdrs">1,000+</div></div>
+        <div class="stat"><div class="stat-lbl">Controlled Systems</div><div class="stat-val gold" id="stat-systems">963+</div></div>
+        <div class="stat"><div class="stat-lbl">Strongholds</div><div class="stat-val" id="stat-strongholds">114+</div></div>
+        <div class="stat"><div class="stat-lbl">HQ System</div><div class="stat-val" id="stat-hq"><a href="https://inara.cz/elite/starsystem/1206/" target="_blank">Clayakarma</a></div></div>
+      </div>
+    </div>
+    <div class="scroll-hint">
+      <div class="scroll-arrow"></div>
+    </div>
+  </section>
+
+  <!-- TICKER -->
+  <div class="ticker-wrap">
+    <div class="ticker-lbl">GROM PERKS</div>
+    <div class="ticker-track">
+      <span class="tick"><span class="ok">REBUY:</span> -100% Reduced cost in Yuri Grom territory</span>
+      <span class="tick"><span class="hi">BOUNTIES:</span> +60% Payout bonus in controlled space</span>
+      <span class="tick"><span class="ok">EXPLORATION:</span> +15% Data sales bonus in our systems</span>
+      <span class="tick"><span class="hi">TRADE:</span> +15% Awarded trade bonds on commodity sales</span>
+      <span class="tick"><span class="ok">LOGISTICS:</span> -30% Weapon module cost reduction</span>
+      <span class="tick"><span class="hi">ARSENAL:</span> Rank 100 unlocks all Powerplay modules</span>
+      <!-- duplicate for seamless loop -->
+      <span class="tick"><span class="ok">REBUY:</span> -100% Reduced cost in Yuri Grom territory</span>
+      <span class="tick"><span class="hi">BOUNTIES:</span> +60% Payout bonus in controlled space</span>
+      <span class="tick"><span class="ok">EXPLORATION:</span> +15% Data sales bonus in our systems</span>
+      <span class="tick"><span class="hi">TRADE:</span> +15% Awarded trade bonds on commodity sales</span>
+      <span class="tick"><span class="ok">LOGISTICS:</span> -30% Weapon module cost reduction</span>
+      <span class="tick"><span class="hi">ARSENAL:</span> Rank 100 unlocks all Powerplay modules</span>
+    </div>
+  </div>
+
+  <!-- WHY GROM -->
+  <section>
+    <div class="wrap">
+      <div class="sec-eye">The Grom Advantage</div>
+      <h2 class="sec-title" style="margin-bottom:10px">Built for Every Commander</h2>
+      <p class="sec-desc" style="margin-bottom:36px">Whether you're a casual trader, a dedicated explorer, or a combat veteran, Yuri Grom provides the best safety net and profit margins in the galaxy.</p>
+      
+      <div class="cards-grid">
+        <!-- CASUAL / SAFETY -->
+        <div class="card">
+          <div class="card-tag">CASUAL · SAFETY</div>
+          <div class="card-title">Zero-Risk Piloting</div>
+          <div class="card-body">The ultimate safety net for casual players. Enjoy <strong>-100% reduced rebuy</strong> when killed in Grom territory or by rival powers. Fly your most expensive ships without the fear of bankruptcy.</div>
+          <div class="card-footer"><span class="badge badge-green">Free Rebuys</span></div>
+        </div>
+
+        <!-- COMBAT -->
+        <div class="card">
+          <div class="card-tag">COMBAT · PROFIT</div>
+          <div class="card-title">The Bounty Hunter's Choice</div>
+          <div class="card-body">Turn every skirmish into a massive payday. Pledged CMDRs earn a <strong>+60% bonus</strong> on all bounty vouchers redeemed within Yuri Grom controlled space.</div>
+          <div class="card-footer"><span class="badge badge-brand">+60% Bounties</span></div>
+        </div>
+
+        <!-- EXPLORATION -->
+        <div class="card">
+          <div class="card-tag">EXPLORATION · PROFIT</div>
+          <div class="card-title">The Explorer's Dividend</div>
+          <div class="card-body">Make your deep-space journeys more rewarding. Exploration data sales fetch a <strong>+15% bonus</strong> in our territory. The stars pay their dues to the Yuri Grom faithful.</div>
+          <div class="card-footer"><span class="badge badge-blue">+15% Exploration</span></div>
+        </div>
+
+        <!-- TRADE & OUTFITTING -->
+        <div class="card">
+          <div class="card-tag">TRADE · LOGISTICS</div>
+          <div class="card-title">Trader's Bounty & Logistics</div>
+          <div class="card-body">A <strong>+15% trade bond</strong> is awarded on commodity sales. Plus, outfit your fleet for less with a <strong>-30% discount</strong> on all weapon modules in our systems.</div>
+          <div class="card-footer"><span class="badge badge-gold">-30% Weapon Cost</span></div>
+        </div>
+
+        <!-- MODULES -->
+        <div class="card">
+          <div class="card-tag">RANK 100 · REWARD</div>
+          <div class="card-title">The Full Arsenal</div>
+          <div class="card-body">Reach <strong>Rank 100</strong> to unlock permanent access to <strong>all Powerplay weapon modules</strong> from every power, including our signature FSD-interrupting Containment Missiles.</div>
+          <div class="card-footer"><span class="badge badge-brand">All Modules Unlocked</span></div>
+        </div>
+
+        <!-- COMMUNITY -->
+        <div class="card">
+          <div class="card-tag">COMMUNITY · INDEPENDENT</div>
+          <div class="card-title">Freedom Among the Stars</div>
+          <div class="card-body">Join an active, player-driven community that values independence. We root out corruption wherever it hides and maintain order through strength and unity.</div>
+          <div class="card-footer"><span class="badge badge-grey">Independent</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="wrap"><div class="divider"></div></div>
+
+  <!-- CTA -->
+  <section>
+    <div class="wrap">
+      <div class="cta-block cornered">
+        <h2>Answer The Call, Commander</h2>
+        <p>Pledge allegiance to Yuri Grom and stand against corruption. Your ships, your skills, your galaxy — used in service of a cause worth fighting for.</p>
+        <div class="cta-btns">
+          <a href="#" class="btn-primary" data-page="guides">Read the Guides</a>
+          <a href="https://discord.com/invite/PEUp2zA" target="_blank" class="btn-ghost">Join Discord</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div><!-- /page-home -->
+
+<!-- ═══════════════════════════════════════
+     PAGE: ABOUT
+═══════════════════════════════════════ -->
+<div id="page-about" class="page">
+  <section style="padding-top:70px">
+    <div class="wrap">
+      <div class="sec-eye">Lore & History</div>
+      <h2 class="sec-title" style="margin-bottom:40px">About Yuri Grom</h2>
+      <div class="about-grid">
+        <div class="lore-block">
+          <p>Born in <strong>3256</strong>, Yuri Grom began his career as an officer in the Federal Navy, rising through the ranks to Admiral with exceptional distinction. Federal Command considered him for an instructor role — an honour few attain. Before the offer was made, Grom resigned unexpectedly, citing the pervasive corruption he witnessed at the highest levels of the Federation.</p>
+          <p>His departure was not solitary. A loyal cohort of Federal pilots followed him, and together they established the <strong>EG Union</strong> — a faction rooted in the principles of order, anti-corruption, and genuine freedom from superpower politics.</p>
+          <div class="quote">"Freedom does not mean Anarchy. True freedom is earned through discipline, and protected through strength."<br><em>— Yuri Grom</em></div>
+          <p>In <strong>3302</strong>, Grom led his fleet to victory in the <strong>Dangerous Games</strong> — a Frontier Developments-sponsored player event that elevated him to Powerplay status. He became the first power created entirely from player efforts, making the movement uniquely community-driven at its core.</p>
+          <p>Based out of <strong>Clayakarma</strong> (formerly Euryale), Grom now commands 963 systems and nearly 700 billion citizens. His ongoing conflict with Federation President <strong>Zachary Hudson</strong> — who labeled him a traitor — continues to define his political legacy.</p>
+          <p>The <strong>Eyes of Leshak</strong> player group, which supports Grom today, operates under the motto <strong>"Freedom Among the Stars"</strong> and organises weekly Powerplay strategy through their Discord and dedicated operations channels.</p>
+        </div>
+        <div>
+          <img src="images/GromPort.jpg" alt="Yuri Grom Portrait" style="width: 100%; max-width: 250px; display: block; margin: 0 auto 20px; border: 1px solid var(--border-hi); box-shadow: 0 0 20px var(--brand-glow);">
+          <div class="info-panel">
+            <div class="info-row"><div class="info-key">Full Name</div><div class="info-val">Yuri Grom</div></div>
+            <div class="info-row"><div class="info-key">Born</div><div class="info-val">3256</div></div>
+            <div class="info-row"><div class="info-key">Title</div><div class="info-val red">Dictator</div></div>
+            <div class="info-row"><div class="info-key">Allegiance</div><div class="info-val">Independent</div></div>
+            <div class="info-row"><div class="info-key">HQ</div><div class="info-val">Clayakarma</div></div>
+            <div class="info-row"><div class="info-key">Faction</div><div class="info-val red">EG Union</div></div>
+            <div class="info-row"><div class="info-key">Origin</div><div class="info-val">Federal Navy (Resigned)</div></div>
+            <div class="info-row"><div class="info-key">Acquisition</div><div class="info-val">Covert</div></div>
+            <div class="info-row"><div class="info-key">Reinforcement</div><div class="info-val">Combat</div></div>
+            <div class="info-row"><div class="info-key">Undermining</div><div class="info-val">Covert</div></div>
+            <div class="info-row"><div class="info-key">Special Module</div><div class="info-val red">Containment Missiles</div></div>
+            <div class="info-row"><div class="info-key">Player Group</div><div class="info-val">The Eyes of Leshak</div></div>
+            <div class="info-row"><div class="info-key">Slogan</div><div class="info-val">"Freedom Among the Stars"</div></div>
+          </div>
+          <div style="margin-top:14px;display:flex;gap:10px;">
+            <a href="https://discord.com/invite/PEUp2zA" target="_blank" class="btn-primary" style="flex:1;text-align:center">Discord</a>
+            <a href="https://www.reddit.com/r/EliteGrom/" target="_blank" class="btn-ghost" style="flex:1;text-align:center">Reddit</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div><!-- /page-about -->
+
+<!-- ═══════════════════════════════════════
+     PAGE: POWERPLAY
+═══════════════════════════════════════ -->
+<div id="page-powerplay" class="page">
+  <section style="padding-top:70px">
+    <div class="wrap">
+      <div class="sec-eye">Cycle Operations</div>
+      <h2 class="sec-title" style="margin-bottom:10px">Powerplay Objectives</h2>
+      <p class="sec-desc" style="margin-bottom:36px">Official cycle priorities, fortification targets, and combat hunting grounds are posted weekly on our Discord. Join the community to get the latest tactical briefings.</p>
+      
+      <div style="margin-bottom:48px;">
+        <a href="https://discord.com/invite/PEUp2zA" target="_blank" class="btn-primary">Get Latest Objectives on Discord</a>
+      </div>
+
+      <!-- Cycle progress -->
+      <div class="pp-progress">
+        <div class="pp-label"><span>Cycle Progress</span><span id="cycle-num">Cycle — Loading</span></div>
+        <div class="pp-bar"><div class="pp-fill" id="pp-fill" style="width:0%"></div></div>
+        <div class="pp-pips" id="pp-pips"></div>
+      </div>
+
+      <!-- Objectives & Systems (Censored) -->
+      <div class="redacted-container">
+        <div style="filter: blur(8px);">
+          <div class="sec-eye" style="margin-bottom:14px">Priority Actions (PP 2.0)</div>
+          <div class="cards-grid" style="margin-bottom:48px;">
+            <div class="card">
+              <div class="card-tag">REINFORCEMENT · COMBAT</div>
+              <div class="card-title">System Reinforcement</div>
+              <div class="card-body">Tactical data redacted. Access authorized via Discord.</div>
+            </div>
+            <div class="card">
+              <div class="card-tag">ACQUISITION · COVERT</div>
+              <div class="card-title">Covert Acquisition</div>
+              <div class="card-body">Tactical data redacted. Access authorized via Discord.</div>
+            </div>
+          </div>
+
+          <div class="sec-eye" style="margin-bottom:16px">Key Systems This Cycle</div>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>System</th>
+                <th>Type</th>
+                <th>Priority</th>
+                <th>Status</th>
+                <th>Notes</th>
+              </tr>
+            </thead>
+            <tbody id="systems-table-body">
+              <!-- Dynamic -->
+            </tbody>
+          </table>
+        </div>
+        <div class="redacted-overlay">
+          <div class="redacted-bg-txt" style="top: -20px; left: -20px;">DENIED</div>
+          <div class="redacted-bg-txt" style="bottom: -20px; right: -20px;">RESTRICTED</div>
+          <div class="redacted-box">CLASSIFIED</div>
+          <div class="redacted-text">
+            Operational objectives and system statuses are restricted to pledged commanders.<br><br>
+            <a href="https://discord.com/invite/PEUp2zA" target="_blank" class="btn-primary" style="padding: 10px 20px; font-size: 0.7rem;">Access via Discord</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div><!-- /page-powerplay -->
+
+<!-- ═══════════════════════════════════════
+     PAGE: GUIDES
+═══════════════════════════════════════ -->
+<div id="page-guides" class="page">
+
+  <!-- Guide Index (shown by default) -->
+  <div id="guide-index">
+    <section style="padding-top:70px">
+      <div class="wrap">
+        <div class="sec-eye">Knowledge Base</div>
+        <h2 class="sec-title" style="margin-bottom:10px">Commander Guides</h2>
+        <p class="sec-desc" style="margin-bottom:36px">Everything you need to contribute effectively to Yuri Grom's Powerplay effort.</p>
+
+        <div class="guide-list" id="guide-list">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Guide Detail (hidden by default) -->
+  <div id="guide-detail" class="guide-detail">
+    <div class="wrap">
+      <a href="#" class="guide-back" id="guide-back-btn">Back to Guides</a>
+      <div class="guide-content" id="guide-content-body">
+        <!-- populated by JS -->
+      </div>
+    </div>
+  </div>
+
+</div><!-- /page-guides -->
+
+<!-- ═══════════════════════════════════════
+     PAGE: NEWS / DISPATCH
+═══════════════════════════════════════ -->
+<div id="page-news" class="page">
+  <section style="padding-top:70px">
+    <div class="wrap">
+      <div class="sec-eye">Grom Comms</div>
+      <h2 class="sec-title" style="margin-bottom:36px">Dispatch &amp; News</h2>
+      <div class="news-grid" id="news-grid">
+        <!-- Dynamic -->
+      </div>
+    </div>
+  </section>
+</div><!-- /page-news -->
+
+<!-- ═══════════ FOOTER ═══════════ -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <img src="images/RedBearLogo.png" alt="" style="height: 24px; vertical-align: middle; margin-right: 8px; opacity: 0.6;">
+      <span class="brand-accent">Yuri Grom</span>
+    </div>
+    <ul class="footer-links">
+      <li><a href="#" data-page="home">Home</a></li>
+      <li><a href="#" data-page="about">About</a></li>
+      <li><a href="#" data-page="powerplay">Powerplay</a></li>
+      <li><a href="#" data-page="guides">Guides</a></li>
+      <li><a href="https://discord.com/invite/PEUp2zA" target="_blank">Contact Command</a></li>
+    </ul>
+    <div class="footer-copy">
+      © 3312 Yuri Grom. All Rights Reserved.<br>
+      Fan site. Not affiliated with Frontier Developments.<br>
+      Elite Dangerous © Frontier Developments plc.
+    </div>
+  </div>
+</footer>
+
+<button id="btn-top" onclick="window.scrollTo({top:0, behavior:'smooth'})" title="Return to Bridge">TOP</button>
+
+<style>
+/* ── MOBILE REFINEMENTS ── */
+@media (max-width: 768px) {
+  .hero { padding: 60px 20px; min-height: calc(100vh - 120px); }
+  .hero-logo-main { max-width: 100%; margin-bottom: 20px; }
+  .hero-ctas { flex-direction: column; width: 100%; gap: 10px; }
+  .btn-primary, .btn-ghost { width: 100%; text-align: center; padding: 12px 20px; }
+  
+  .nav-inner { padding: 0 15px; height: auto; flex-wrap: wrap; justify-content: center; padding-bottom: 10px; }
+  .nav-brand { margin-right: 0; margin-bottom: 5px; font-size: 1rem; }
+  .nav-brand img { height: 24px !important; }
+  .nav-right { width: 100%; justify-content: center; margin-left: 0; }
+  .nav-live { font-size: 0.55rem; white-space: nowrap; order: 2; }
+  .btn-enlist { display: none; } /* Hide enlist button in mobile nav to save space */
+
+  .redacted-box { font-size: 1.1rem; padding: 10px 20px; }
+  .redacted-text { font-size: 0.75rem; max-width: 240px; }
+  
+  .stats-strip { flex-wrap: wrap; }
+  .stat { min-width: 50%; border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); }
+  .stat:nth-child(even) { border-right: none; }
+  .stat-val { font-size: 1.1rem; }
+  .stat-lbl { font-size: 0.5rem; }
+  .hero-stats { position: relative; bottom: auto; margin-top: 40px; padding: 0; }
+  
+  .ticker-wrap { top: 0; position: relative; } /* Don't stick on mobile to save space */
+  .ticker-lbl { font-size: 0.6rem; padding: 0 10px; }
+}
+</style>
+
+<script>
+/* ════════════════════════════════════════
+   SCROLL & NAVIGATION LOGIC
+════════════════════════════════════════ */
+window.addEventListener('scroll', () => {
+  const btn = document.getElementById('btn-top');
+  if (window.scrollY > 500) { btn.style.display = 'block'; }
+  else { btn.style.display = 'none'; }
+});
+
+// Handle news expansion
+document.getElementById('news-grid').addEventListener('click', e => {
+  const moreLink = e.target.closest('.news-more');
+  if (moreLink) {
+    e.preventDefault();
+    moreLink.closest('.news-card').classList.add('expanded');
+  }
+});
+(()=>{
+  const c = document.getElementById('canvas-bg');
+  const ctx = c.getContext('2d', { alpha: false });
+  let stars=[], W, H;
+  
+  function resize(){ 
+    W = c.width = window.innerWidth; 
+    H = c.height = window.innerHeight; 
+  }
+  
+  function init(){
+    stars=[];
+    const n = Math.floor(W * H / 2000); 
+    for(let i=0; i<n; i++) {
+      stars.push({
+        x: Math.random() * W, 
+        y: Math.random() * H,
+        s: Math.random() * 1.5 + 0.5, 
+        o: Math.random() * 0.5 + 0.2, 
+        p: Math.random() * Math.PI * 2, 
+        v: Math.random() * 0.01 + 0.005, 
+        c: Math.random() < 0.1 ? '241,60,58' : '255,255,255'
+      });
+    }
+  }
+  
+  function draw(){
+    ctx.fillStyle = '#050304';
+    ctx.fillRect(0, 0, W, H);
+    
+    for(let i=0; i<stars.length; i++){
+      const s = stars[i];
+      s.p += s.v;
+      const alpha = s.o * (0.5 + 0.5 * Math.sin(s.p));
+      ctx.fillStyle = `rgba(${s.c}, ${alpha})`;
+      ctx.fillRect(s.x, s.y, s.s, s.s);
+    }
+    requestAnimationFrame(draw);
+  }
+
+  window.addEventListener('resize', () => { resize(); init(); });
+  resize(); init(); draw();
+})();
+
+/* ════════════════════════════════════════
+   DYNAMIC CONTENT ENGINE
+════════════════════════════════════════ */
+let GUIDE_LIST = [];
+
+async function initGuides() {
+  try {
+    const res = await fetch('guides/guides.json');
+    if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+    GUIDE_LIST = await res.json();
+    renderGuideList();
+  } catch(e) { 
+    console.error('Failed to load guide index', e);
+    const list = document.getElementById('guide-list');
+    if (list) list.innerHTML = `<div style="padding:40px; text-align:center; color:var(--brand); font-family:'Share Tech Mono',monospace;">// ERROR: FAILED TO FETCH OPERATIONAL PROTOCOLS<br><small style="color:var(--text-dim)">${e.message}</small></div>`;
+  }
+}
+
+async function initStats() {
+  try {
+    const res = await fetch('guides/stats.json');
+    const data = await res.json();
+    if(data.cmdr_count) document.getElementById('stat-cmdrs').textContent = data.cmdr_count;
+    if(data.controlled_systems) document.getElementById('stat-systems').textContent = data.controlled_systems;
+    if(data.strongholds) document.getElementById('stat-strongholds').textContent = data.strongholds;
+    if(data.hq_system) {
+      const hqLink = document.querySelector('#stat-hq a');
+      if(hqLink) hqLink.textContent = data.hq_system;
+      else document.getElementById('stat-hq').textContent = data.hq_system;
+    }
+  } catch(e) { console.warn('Using fallback stats'); }
+}
+
+async function initNews() {
+  try {
+    const res = await fetch('guides/news.json');
+    const news = await res.json();
+    const grid = document.getElementById('news-grid');
+    grid.innerHTML = news.map(n => `
+      <div class="news-card ${n.featured ? 'feat' : ''}">
+        <div>
+          <div class="news-date">// ${n.date} ${n.dispatch_num ? '— DISPATCH #' + n.dispatch_num : ''}</div>
+          <h3 class="news-title">${n.title}</h3>
+          <p class="news-body">${n.body}</p>
+          <a href="#" class="news-more">Continue reading</a>
+        </div>
+        ${n.featured ? '<div class="news-emblem"><div class="news-emblem-txt">GROM</div></div>' : ''}
+      </div>
+    `).join('');
+  } catch(e) { console.error('Failed to load news', e); }
+}
+
+async function initSystems() {
+  try {
+    const res = await fetch('guides/systems.json');
+    const systems = await res.json();
+    const body = document.getElementById('systems-table-body');
+    body.innerHTML = systems.map(s => `
+      <tr>
+        <td class="sys">${s.name}</td>
+        <td class="dim">${s.type}</td>
+        <td><span class="badge badge-brand">${s.priority}</span></td>
+        <td class="${s.status.toLowerCase().includes('fortified') || s.status.toLowerCase().includes('secured') ? 'ok' : 'warn'}">${s.status}</td>
+        <td class="dim">${s.notes}</td>
+      </tr>
+    `).join('');
+  } catch(e) { console.error('Failed to load systems', e); }
+}
+
+function renderGuideList() {
+  const list = document.getElementById('guide-list');
+  if (!GUIDE_LIST || GUIDE_LIST.length === 0) {
+    list.innerHTML = '<div style="padding:40px; text-align:center; color:var(--text-dim); font-family:\'Share Tech Mono\',monospace;">// NO OPERATIONAL PROTOCOLS FOUND</div>';
+    return;
+  }
+  // Sort pinned guides to top
+  const sortedGuides = [...GUIDE_LIST].sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0));
+  
+  list.innerHTML = sortedGuides.map((g, i) => `
+    <div class="guide-row" data-guide="${g.id}">
+      <div class="guide-num">${g.pinned ? '📌' : 'G-' + (i+1).toString().padStart(2, '0')}</div>
+      <div class="guide-info">
+        <div class="guide-name">${g.title} ${g.pinned ? '<span class="badge badge-gold" style="font-size:0.55rem; margin-left:8px; vertical-align:middle">PINNED</span>' : ''}</div>
+        <div class="guide-desc">Accessing operational protocols for ${g.id}...</div>
+      </div>
+      <div class="guide-meta">
+        <span class="badge badge-${getDiffColor(g.diff)}">${g.diff}</span>
+        <div class="guide-diff">${g.time}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function getDiffColor(diff) {
+  const map = { 'Beginner': 'green', 'Intermediate': 'gold', 'Advanced': 'brand', 'Combat': 'brand', 'Strategy': 'blue' };
+  return map[diff] || 'grey';
+}
+
+async function loadGuideContent(id) {
+  const meta = GUIDE_LIST.find(g => g.id === id);
+  const body = document.getElementById('guide-content-body');
+  body.innerHTML = `<h1>Loading Protocol...</h1>`;
+  try {
+    const res = await fetch(`guides/${id}.md`);
+    if(!res.ok) throw new Error('File not found');
+    const md = await res.text();
+    const html = marked.parse(md);
+    body.innerHTML = `
+      <h1>${meta.title}</h1>
+      <div class="g-meta">
+        <span>DIFFICULTY: ${meta.diff}</span>
+        <span>${meta.time}</span>
+        <span>UPDATED: ${meta.up}</span>
+      </div>
+      <div class="md-content">${html}</div>
+    `;
+  } catch(e) { body.innerHTML = `<h1>ERROR</h1><p>Failed to load guide from <code>guides/${id}.md</code>.</p>`; }
+}
+
+document.getElementById('guide-list').addEventListener('click', e => {
+  const row = e.target.closest('[data-guide]');
+  if(!row) return;
+  loadGuideContent(row.dataset.guide);
+  document.getElementById('guide-index').style.display = 'none';
+  document.getElementById('guide-detail').classList.add('active');
+  window.scrollTo({top:0, behavior:'smooth'});
+});
+
+/* ════════════════════════════════════════
+   PAGE ROUTER
+════════════════════════════════════════ */
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  const target = document.getElementById('page-'+id);
+  if(target) target.classList.add('active');
+  document.querySelectorAll('.nav-links a').forEach(a=>{ a.classList.toggle('active', a.dataset.page===id); });
+  window.scrollTo({top:0, behavior:'smooth'});
+  if(id==='guides'){ document.getElementById('guide-index').style.display='block'; document.getElementById('guide-detail').classList.remove('active'); }
+}
+
+document.addEventListener('click', e=>{
+  const el = e.target.closest('[data-page]');
+  if(el && !el.href?.includes('discord') && !el.href?.includes('reddit')){ e.preventDefault(); showPage(el.dataset.page); }
+});
+
+/* ════════════════════════════════════════
+   POWERPLAY CYCLE PROGRESS
+════════════════════════════════════════ */
+(()=>{
+  const PP2_START = new Date('2024-10-31T07:00:00Z');
+  const CYCLE_MS = 7 * 24 * 60 * 60 * 1000;
+
+  function updateCycle() {
+    const now = new Date();
+    const elapsed = now - PP2_START;
+    const cycleNum = Math.floor(elapsed / CYCLE_MS) + 1;
+    const currentCycleStart = PP2_START.getTime() + (cycleNum - 1) * CYCLE_MS;
+    const nextCycleStart = currentCycleStart + CYCLE_MS;
+    const remaining = nextCycleStart - now.getTime();
+
+    const cycleEl = document.getElementById('cycle-num');
+    const pct = Math.round(((now.getTime() - currentCycleStart) / CYCLE_MS) * 100);
+    if(cycleEl) cycleEl.textContent = `Cycle ${cycleNum} · ${pct}% elapsed`;
+
+    const liveStatus = document.querySelector('.nav-live');
+    if(liveStatus) {
+      const d = Math.floor(remaining / (1000 * 60 * 60 * 24));
+      const h = Math.floor((remaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const m = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+      const s = Math.floor((remaining % (1000 * 60)) / 1000);
+      liveStatus.innerHTML = `<span class="live-dot"></span> CYCLE ${cycleNum} ENDS IN: ${d}d ${h}h ${m}m ${s}s`;
+      if(remaining < 24 * 60 * 60 * 1000) { liveStatus.style.color = 'var(--brand)'; document.querySelector('.live-dot').style.background = 'var(--brand)'; }
+    }
+
+    const fill = document.getElementById('pp-fill');
+    if(fill) fill.style.width = pct+'%';
+    const pips = document.getElementById('pp-pips');
+    if(pips && pips.children.length === 0) {
+      const daysInto = Math.floor((now - currentCycleStart) / (24 * 60 * 60 * 1000));
+      for(let i=0;i<7;i++){
+        const p = document.createElement('div');
+        p.className = 'pp-pip' + (i < daysInto ? ' done' : i===daysInto ? ' now' : '');
+        pips.appendChild(p);
+      }
+    }
+  }
+  updateCycle();
+  setInterval(updateCycle, 1000);
+})();
+
+document.getElementById('guide-back-btn').addEventListener('click', e => {
+  e.preventDefault();
+  document.getElementById('guide-index').style.display='block';
+  document.getElementById('guide-detail').classList.remove('active');
+  window.scrollTo({top:0, behavior:'smooth'});
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  initGuides(); 
+  initStats(); 
+  initSystems(); 
+  initNews();
+});
+</script>
+</body>
+</html>

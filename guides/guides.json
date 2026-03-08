@@ -1,0 +1,47 @@
+[
+  {
+    "id": "getting-started",
+    "title": "Getting Started — How to Pledge",
+    "diff": "Beginner",
+    "time": "~5 min",
+    "up": "3306.02.01",
+    "pinned": true
+  },
+  {
+    "id": "fortification",
+    "title": "Reinforcement — Defending the Union",
+    "diff": "Intermediate",
+    "time": "~8 min",
+    "up": "3306.02.14"
+  },
+  {
+    "id": "combat-merits",
+    "title": "Combat Operations (PP 2.0)",
+    "diff": "Combat",
+    "time": "~10 min",
+    "up": "3306.02.28",
+    "pinned": true
+  },
+  {
+    "id": "containment-missiles",
+    "title": "Containment Missiles — Tool",
+    "diff": "Advanced",
+    "time": "~7 min",
+    "up": "3306.01.15"
+  },
+  {
+    "id": "merits-ranks",
+    "title": "Merits & Permanent Ranks",
+    "diff": "Intermediate",
+    "time": "~6 min",
+    "up": "3306.01.20",
+    "pinned": true
+  },
+  {
+    "id": "covert-acquisition",
+    "title": "Covert Acquisition — Expansion",
+    "diff": "Strategy",
+    "time": "~9 min",
+    "up": "3306.02.05"
+  }
+]

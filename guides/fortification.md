@@ -1,23 +1,32 @@
-<h2>What is Fortification?</h2>
-<p>Fortification is the act of delivering <strong>Yuri Grom supplies</strong> to defended systems, reducing their "Trigger" value and making them harder for enemies to undermine. It's the primary way non-combat CMDRs contribute and one of the fastest ways to earn Merits.</p>
+---
+id: fortification
+title: Reinforcement — Defending the Union
+description: Learn the logistics of system reinforcement to ensure our territories remain secure and profitable.
+category: Logistics
+diff: Intermediate
+time: "~8 min"
+up: "3310.02.14"
+icon: "🛡️"
+---
 
-<h2>The Golden Rule</h2>
-<div class="callout"><strong>ONLY fortify systems listed on the Discord strategy channel.</strong> Do NOT fortify systems not listed — some are deliberately left unfortified so they can be scrapped (consolidated) to reduce CC drain. Fortifying them ruins the plan.</div>
+## What is Fortification?
+Fortification is the act of delivering **Yuri Grom supplies** to defended systems, reducing their "Trigger" value and making them harder for enemies to undermine. It's the primary way non-combat CMDRs contribute and one of the fastest ways to earn Merits.
 
-<h2>How to Fortify</h2>
-<ol>
-  <li>Check the <strong>Yuri Grom Discord</strong> for the current priority systems list.</li>
-  <li>In game, go to <strong>Galactic Powers → Yuri Grom</strong> and select a listed system.</li>
-  <li>Head to any Yuri Grom controlled station and pick up <strong>Yuri Grom Supplies</strong> from the Power Contact.</li>
-  <li>Jump to the target system, land at any station, and deliver the supplies to the <strong>Power Contact</strong>.</li>
-  <li>Repeat — each delivery earns Merits based on your current rank.</li>
-</ol>
+## The Golden Rule
+> **ONLY fortify systems listed on the Discord strategy channel.** Do NOT fortify systems not listed — some are deliberately left unfortified so they can be scrapped (consolidated) to reduce CC drain. Fortifying them ruins the plan.
 
-<h2>Merit Rates by Rank</h2>
-<p>Higher rank = more merits per delivery. At Rank 5, a CMDR can earn roughly <strong>50 merits per 30 minutes</strong>. At lower ranks, expect 25–35 per run depending on system distance.</p>
+## How to Fortify
+1. Check the **Yuri Grom Discord** for the current priority systems list.
+2. In game, go to **Galactic Powers → Yuri Grom** and select a listed system.
+3. Head to any Yuri Grom controlled station and pick up **Yuri Grom Supplies** from the Power Contact.
+4. Jump to the target system, land at any station, and deliver the supplies to the **Power Contact**.
+5. Repeat — each delivery earns Merits based on your current rank.
 
-<h2>Efficient Routing</h2>
-<p>Pick up supplies in bulk (your cargo limit), plan a short route hitting 2–3 priority systems in sequence, then return for more. Using a ship with high jump range and large cargo — like a <strong>Type-9, Cutter, or Python</strong> — maximises efficiency.</p>
+## Merit Rates by Rank
+Higher rank = more merits per delivery. At Rank 5, a CMDR can earn roughly **50 merits per 30 minutes**. At lower ranks, expect 25–35 per run depending on system distance.
 
-<h2>When to Stop</h2>
-<p>Once a system hits its Trigger threshold, further fortification is wasted. The Discord strategy channels are updated in real-time by coordinators — check them before long runs.</p>
+## Efficient Routing
+Pick up supplies in bulk (your cargo limit), plan a short route hitting 2–3 priority systems in sequence, then return for more. Using a ship with high jump range and large cargo — like a **Type-9, Cutter, or Python** — maximises efficiency.
+
+## When to Stop
+Once a system hits its Trigger threshold, further fortification is wasted. The Discord strategy channels are updated in real-time by coordinators — check them before long runs.

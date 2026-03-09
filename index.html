@@ -514,11 +514,22 @@ section { padding: 80px 0; }
   max-width: 100%; height: auto; margin: 20px 0; border: 1px solid var(--border-hi);
   background: var(--black);
 }
-.guide-content iframe { aspect-ratio: 16/9; width: 100%; }
+.guide-content iframe { aspect-ratio: 16/9; width: 100%; height: auto; }
+
+/* Image Sizing Helpers */
+.guide-content .img-small img { max-width: 150px; }
+.guide-content .img-medium img { max-width: 400px; }
+.guide-content .img-center { display: block; margin-left: auto; margin-right: auto; text-align: center; }
+.guide-content .img-center img { display: inline-block; }
+.guide-content .img-left { float: left; margin-right: 25px; margin-bottom: 15px; }
+.guide-content .img-right { float: right; margin-left: 25px; margin-bottom: 15px; }
+.guide-content .clearfix::after { content: ""; clear: both; display: table; }
 
 .guide-content h1 {
-  font-family:'Rajdhani',sans-serif; font-weight:700; font-size:2rem;
-  letter-spacing:.05em; text-transform:uppercase; color:#fff; margin-bottom:6px;
+  font-family:'Rajdhani',sans-serif; font-weight:700; font-size:2.2rem;
+  letter-spacing:.05em; text-transform:uppercase; 
+  color: var(--brand-bright); margin-bottom:6px;
+  text-shadow: 0 0 15px var(--brand-glow);
 }
 .guide-content .g-meta {
   font-family:'Share Tech Mono',monospace; font-size:.65rem;
@@ -528,7 +539,7 @@ section { padding: 80px 0; }
 .guide-content h2 {
   font-family:'Rajdhani',sans-serif; font-weight:700; font-size:1.15rem;
   letter-spacing:.08em; text-transform:uppercase; color: var(--brand-bright);
-  margin:32px 0 12px; border-bottom:1px solid var(--border); padding-bottom:6px;
+  margin:32px 0 12px; border-bottom:1px solid var(--border-hi); padding-bottom:6px;
 }
 .guide-content p {
   font-size:.9rem; line-height:1.8; color: var(--text-sec); margin-bottom:14px;
@@ -539,12 +550,13 @@ section { padding: 80px 0; }
 .guide-content li {
   font-size:.88rem; line-height:1.75; color: var(--text-sec); margin-bottom:4px;
 }
-.guide-content .callout {
-  background: var(--brand-faint); border:1px solid var(--border-hi);
-  border-left:3px solid var(--brand); padding:16px 20px; margin:20px 0;
-  font-size:.88rem; color: var(--text);
+.guide-content blockquote, .guide-content .callout {
+  background: var(--brand-faint); border: 1px solid var(--border-hi);
+  border-left: 3px solid var(--brand); padding: 16px 20px; margin: 20px 0;
+  font-size: .88rem; color: var(--text);
 }
-.guide-content .callout strong { color: var(--brand-bright); }
+.guide-content blockquote p { margin-bottom: 0; }
+.guide-content blockquote strong, .guide-content .callout strong { color: var(--brand-bright); }
 .guide-content code {
   font-family:'Share Tech Mono',monospace; font-size:.8rem;
   background: rgba(241,60,58,0.12); border:1px solid var(--border);
@@ -1572,7 +1584,11 @@ async function loadGuideContent(id) {
     const res = await fetch(`guides/${id}.md`);
     if(!res.ok) throw new Error('File not found');
     const md = await res.text();
-    const html = marked.parse(md);
+    
+    // Strip YAML frontmatter (the block between --- at the top of the file)
+    const cleanMd = md.replace(/^---\s*[\s\S]*?---\s*/, '');
+    
+    const html = marked.parse(cleanMd);
     body.innerHTML = `
       <h1>${meta.title}</h1>
       <div class="g-meta">
@@ -1662,6 +1678,27 @@ document.getElementById('guide-filters').addEventListener('click', e => {
 });
 
 // Guide Navigation Events
+document.getElementById('guide-toc').addEventListener('click', e => {
+  const link = e.target.closest('a');
+  if (link) {
+    e.preventDefault();
+    const id = link.getAttribute('href').substring(1);
+    const target = document.getElementById(id);
+    if (target) {
+      const offset = 80; // Account for sticky nav
+      const bodyRect = document.body.getBoundingClientRect().top;
+      const elementRect = target.getBoundingClientRect().top;
+      const elementPosition = elementRect - bodyRect;
+      const offsetPosition = elementPosition - offset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+    }
+  }
+});
+
 document.querySelector('.guide-nav').addEventListener('click', e => {
   const el = e.target.closest('[data-guide]');
   if (el) {
@@ -1683,6 +1720,7 @@ document.getElementById('guide-list').addEventListener('click', e => {
    PAGE ROUTER (Hash-based)
 ════════════════════════════════════════ */
 function showPage(id, skipHash = false){
+  if (id.startsWith('sec-')) return; // Ignore TOC internal anchors
   // If id contains a query (e.g. guides?id=getting-started)
   const [pageId, query] = id.split('?');
   const params = new URLSearchParams(query);

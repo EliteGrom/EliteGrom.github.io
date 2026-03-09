@@ -1,83 +1,46 @@
-<h2>The Merit System (Powerplay 2.0)</h2>
-<p>Powerplay 2.0 introduced a significant overhaul to how you earn and keep your rank. The most important change: <strong>Merits no longer decay</strong>. Once you earn a rank with Yuri Grom, it is permanent.</p>
+---
+id: merits-ranks
+title: Merits & Permanent Ranks
+description: Understand the ranking system, how to earn merits, and the exclusive rewards waiting for loyal followers.
+category: Basics
+diff: Intermediate
+time: "~6 min"
+up: "3310.03.08"
+pinned: true
+icon: "🎖️"
+---
 
-<h2>Rank 0 — The First Steps</h2>
-<p>New to the cause? Your first objective is to establish yourself as a reliable assets for Yuri Grom. Complete these 5 initial tasks to begin your ascent:</p>
+## The Merit System (Powerplay 2.0)
+Powerplay 2.0 introduced a significant overhaul to how you earn and keep your rank. The most important change: **Merits no longer decay**. Once you earn a rank with Yuri Grom, it is permanent.
 
-<div class="objective-box">
-  <div class="obj-step">
-    <div class="obj-num">1</div>
-    <div class="obj-txt"><strong>Pledge Allegiance:</strong> Open your right-hand panel in-cockpit, navigate to Galactic Powers, select Yuri Grom, and choose <strong>Pledge Allegiance</strong>.</div>
-  </div>
-  <div class="obj-step">
-    <div class="obj-num">2</div>
-    <div class="obj-txt"><strong>Travel to HQ:</strong> Set course for the <strong>Clayakarma</strong> system. This is the heart of Grom's operations.</div>
-  </div>
-  <div class="obj-step">
-    <div class="obj-num">3</div>
-    <div class="obj-txt"><strong>Equip for Work:</strong> Outfityour ship for the cause. You'll need <strong>Cargo Racks</strong> for logistics/fortification or <strong>Combat Modules</strong> for undermining.</div>
-  </div>
-  <div class="obj-step">
-    <div class="obj-num">4</div>
-    <div class="obj-txt"><strong>Check Weekly Tasks:</strong> Open the Powerplay menu at a station and check your <strong>Weekly Tasks</strong>. Completing these provides a massive merit boost.</div>
-  </div>
-  <div class="obj-step">
-    <div class="obj-num">5</div>
-    <div class="obj-txt"><strong>Establish Comms:</strong> Join the <a href="https://discord.com/invite/PEUp2zA" target="_blank">Grom Discord</a>. Commanders there will provide real-time objectives and wing support.</div>
-  </div>
-</div>
+## Rank 0 — The First Steps
+New to the cause? Your first objective is to establish yourself as a reliable assets for Yuri Grom. Complete these 5 initial tasks to begin your ascent:
 
-<h2>Rank Progression Track</h2>
-<p>The road to Rank 100 is long, but the rewards are permanent. Below are the key milestones in your service record.</p>
+1. **Pledge Allegiance:** Open your right-hand panel in-cockpit, navigate to Galactic Powers, select Yuri Grom, and choose **Pledge Allegiance**.
+2. **Travel to HQ:** Set course for the **Clayakarma** system. This is the heart of Grom's operations.
+3. **Equip for Work:** Outfityour ship for the cause. You'll need **Cargo Racks** for logistics/fortification or **Combat Modules** for undermining.
+4. **Check Weekly Tasks:** Open the Powerplay menu at a station and check your **Weekly Tasks**. Completing these provides a massive merit boost.
+5. **Establish Comms:** Join the [Grom Discord](https://discord.com/invite/PEUp2zA). Commanders there will provide real-time objectives and wing support.
 
-<div class="rank-track">
-  <div class="rank-node active">
-    <div class="rank-header">
-      <div class="rank-title">Rank 0: Recruit</div>
-      <div class="rank-lvl">LVL 0</div>
-    </div>
-    <div class="rank-perk">Beginning of service. Access to basic weekly tasks and standard merit accumulation.</div>
-  </div>
+## Rank Progression Track
+The road to Rank 100 is long, but the rewards are permanent. Below are the key milestones in your service record.
 
-  <div class="rank-node">
-    <div class="rank-header">
-      <div class="rank-title">Rank 10: Associate</div>
-      <div class="rank-lvl">LVL 10</div>
-    </div>
-    <div class="rank-perk"><strong>Reward:</strong> +10% Bonus to bounty payouts in Grom systems. Increased credit salary.</div>
-  </div>
+### Rank 0: Recruit (LVL 0)
+Beginning of service. Access to basic weekly tasks and standard merit accumulation.
 
-  <div class="rank-node">
-    <div class="rank-header">
-      <div class="rank-title">Rank 30: Specialist</div>
-      <div class="rank-lvl">LVL 30</div>
-    </div>
-    <div class="rank-perk"><strong>Reward:</strong> Access to specialized logistics missions and increased weapon discounts (-10%).</div>
-  </div>
+### Rank 10: Associate (LVL 10)
+**Reward:** +10% Bonus to bounty payouts in Grom systems. Increased credit salary.
 
-  <div class="rank-node">
-    <div class="rank-header">
-      <div class="rank-title">Rank 50: Lieutenant</div>
-      <div class="rank-lvl">LVL 50</div>
-    </div>
-    <div class="rank-perk"><strong>Reward:</strong> +30% Bounty payout bonus. Significant increases to trade and exploration dividends.</div>
-  </div>
+### Rank 30: Specialist (LVL 30)
+**Reward:** Access to specialized logistics missions and increased weapon discounts (-10%).
 
-  <div class="rank-node">
-    <div class="rank-header">
-      <div class="rank-title">Rank 75: Veteran</div>
-      <div class="rank-lvl">LVL 75</div>
-    </div>
-    <div class="rank-perk"><strong>Reward:</strong> Advanced tactical coordination access. Permanent 0% rebuy cost in Yuri Grom territory.</div>
-  </div>
+### Rank 50: Lieutenant (LVL 50)
+**Reward:** +30% Bounty payout bonus. Significant increases to trade and exploration dividends.
 
-  <div class="rank-node">
-    <div class="rank-header">
-      <div class="rank-title">Rank 100: Elite Commander</div>
-      <div class="rank-lvl">LVL 100</div>
-    </div>
-    <div class="rank-perk"><strong>THE ULTIMATE REWARD:</strong> Permanent access to <strong>ALL Powerplay Modules</strong> in the galaxy, including Prismatic Shields, Pack-Hounds, and Grom's Containment Missiles.</div>
-  </div>
-</div>
+### Rank 75: Veteran (LVL 75)
+**Reward:** Advanced tactical coordination access. Permanent 0% rebuy cost in Yuri Grom territory.
 
-<div class="callout"><strong>The Path to 100:</strong> Reaching Rank 100 is a lifetime achievement. Because merits do not decay, you can work toward this goal across months or even years of play.</div>
+### Rank 100: Elite Commander (LVL 100)
+**THE ULTIMATE REWARD:** Permanent access to **ALL Powerplay Modules** in the galaxy, including Prismatic Shields, Pack-Hounds, and Grom's Containment Missiles.
+
+> **The Path to 100:** Reaching Rank 100 is a lifetime achievement. Because merits do not decay, you can work toward this goal across months or even years of play.

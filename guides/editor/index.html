@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yuri Grom — Intelligence Terminal v18</title>
+    <link rel="icon" type="image/png" href="../../images/RedBearLogo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&family=Exo+2:ital,wght@0,200;0,300;0,400;0,600;1,300&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        :root {
+            --black: #050304; --deep: #0d0608; --dark: #140a0b; --panel: #1a0d0e;
+            --brand: #f13c3a; --brand-bright: #ff5c5a; --brand-dim: #b32a28;
+            --brand-glow: rgba(241, 60, 58, 0.3); --brand-faint: rgba(241, 60, 58, 0.07);
+            --text: #d8c8c0; --text-sec: #b0a0a0; --text-dim: #998888;
+            --border: rgba(241, 60, 58, 0.18); --border-hi: rgba(241, 60, 58, 0.45);
+            --gold: #d4a840; --gold-glow: rgba(212, 168, 64, 0.2);
+        }
+
+        * { box-sizing: border-box; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: var(--black); }
+        ::-webkit-scrollbar-thumb { background: var(--brand-dim); border-radius: 3px; }
+
+        body {
+            background: var(--black); color: var(--text); font-family: 'Exo 2', sans-serif;
+            margin: 0; display: flex; height: 100vh; overflow: hidden;
+        }
+
+        /* ═════════ SIDEBAR ═════════ */
+        .sidebar { width: 340px; background: var(--deep); border-right: 1px solid var(--border); display: flex; flex-direction: column; overflow-y: auto; flex-shrink: 0; }
+        .sidebar-header { padding: 15px 20px; background: var(--dark); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        h1 { font-family: 'Rajdhani', sans-serif; color: var(--brand); text-transform: uppercase; font-size: 0.9rem; margin: 0; letter-spacing: 2px; }
+        .form-section { padding: 15px 20px; }
+        .form-group { margin-bottom: 12px; }
+        label { display: block; font-family: 'Share Tech Mono', monospace; font-size: 0.6rem; color: var(--brand-bright); margin-bottom: 3px; text-transform: uppercase; }
+        input, select, textarea { width: 100%; background: var(--panel); border: 1px solid var(--border); color: var(--text); padding: 8px 10px; font-family: 'Exo 2', sans-serif; outline: none; font-size: 0.85rem; }
+        input:focus { border-color: var(--brand-bright); }
+        input:disabled { opacity: 0.5; cursor: not-allowed; color: var(--gold); background: rgba(0,0,0,0.2); }
+
+        .field-row { display: flex; gap: 8px; align-items: center; }
+        .lock-btn { background: var(--panel); border: 1px solid var(--border); color: var(--text-dim); cursor: pointer; padding: 8px; font-size: 0.8rem; height: 36px; transition: all 0.2s; }
+        .lock-btn.locked { color: var(--gold); border-color: var(--gold); }
+
+        .btn { background: var(--brand); color: white; border: none; padding: 10px; font-family: 'Rajdhani', sans-serif; font-weight: 700; text-transform: uppercase; cursor: pointer; width: 100%; margin-top: 8px; letter-spacing: 1px; font-size: 0.8rem; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn:hover { background: var(--brand-bright); box-shadow: 0 0 15px var(--brand-glow); }
+        .btn-sec { background: transparent; border: 1px solid var(--brand); color: var(--brand); }
+        .btn-gold { background: var(--gold); color: black; }
+
+        .checkbox-group { display: flex; align-items: center; gap: 8px; font-family: 'Share Tech Mono'; font-size: 0.65rem; color: var(--gold); cursor: pointer; }
+        .checkbox-group input { width: auto; }
+
+        .tactical-box { margin-top: 20px; padding: 15px; background: var(--dark); border: 1px solid var(--border-hi); font-size: 0.7rem; line-height: 1.5; }
+        .tactical-box h3 { margin: 0 0 10px 0; font-family: 'Rajdhani'; color: var(--brand); text-transform: uppercase; font-size: 0.8rem; border-bottom: 1px solid var(--border); padding-bottom: 5px; display: flex; justify-content: space-between; }
+
+        /* ═════════ MAIN EDITOR ═════════ */
+        .main { flex-grow: 1; display: flex; flex-direction: column; background: var(--black); position: relative; }
+        .toolbar { background: var(--dark); border-bottom: 1px solid var(--border); padding: 0 15px; display: flex; gap: 4px; align-items: center; height: 40px; }
+        .tool-btn { background: transparent; border: 1px solid transparent; color: var(--text-sec); padding: 4px 8px; cursor: pointer; font-family: 'Share Tech Mono', monospace; font-size: 0.7rem; transition: all 0.2s; white-space: nowrap; border-radius: 2px; }
+        .tool-btn:hover { background: var(--panel); border-color: var(--border-hi); color: var(--brand-bright); }
+
+        .editor-container { flex-grow: 1; display: flex; height: calc(100% - 40px); }
+        .editor-pane, .preview-pane { width: 50%; display: flex; flex-direction: column; }
+        .editor-pane { border-right: 1px solid var(--border); }
+
+        #editor { flex-grow: 1; resize: none; border: none; background: var(--black); font-family: 'Share Tech Mono', monospace; padding: 15px; font-size: 0.95rem; line-height: 1.5; color: var(--text); outline: none; }
+        #preview-wrapper { flex-grow: 1; padding: 40px; overflow-y: auto; background: var(--black); }
+
+        /* HUD ELEMENTS (SYCNED TO index.html) */
+        .guide-content { background: var(--dark); border: 1px solid var(--border); padding: 44px 48px; max-width: 860px; margin: 0 auto; text-align: left; }
+        .guide-content h1 { font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 2.2rem; color: var(--brand-bright); margin-bottom: 6px; text-shadow: 0 0 15px var(--brand-glow); }
+        .guide-content .g-meta { font-family: 'Share Tech Mono', monospace; font-size: .65rem; color: var(--text-dim); margin-bottom: 28px; display: flex; gap: 20px; }
+        .guide-content h2 { font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 1.15rem; color: var(--brand-bright); margin: 32px 0 12px; border-bottom: 1px solid var(--border-hi); padding-bottom: 6px; }
+        .guide-content p { font-size: .9rem; line-height: 1.8; color: var(--text-sec); margin-bottom: 14px; }
+        .guide-content blockquote { background: var(--brand-faint); border: 1px solid var(--border-hi); border-left: 3px solid var(--brand); padding: 16px 20px; margin: 20px 0; font-size: .88rem; color: var(--text); }
+        .guide-content .clearfix::after { content: ""; clear: both; display: table; }
+        
+        /* Image Sizing Helpers */
+        .guide-content img { max-width: 100%; height: auto; margin: 20px 0; border: 1px solid var(--border-hi); background: var(--black); }
+        .guide-content .img-small img { max-width: 150px !important; width: 100%; }
+        .guide-content .img-medium img { max-width: 400px !important; width: 100%; }
+        .guide-content .img-large img { max-width: 600px !important; width: 100%; }
+        .guide-content .img-left { float: left; margin-right: 25px; margin-bottom: 15px; }
+        .guide-content .img-right { float: right; margin-left: 25px; margin-bottom: 15px; }
+        .guide-content .img-center { display: block; margin-left: auto; margin-right: auto; text-align: center; }
+        .guide-content .img-center img { display: inline-block; }
+
+        .badge-gold { font-family: 'Rajdhani', sans-serif; font-weight: 600; font-size: .68rem; padding: 3px 10px; border: 1px solid rgba(212,168,64,.4); background: rgba(212,168,64,.08); color: var(--gold); margin-left: 10px; vertical-align: middle; }
+
+        .overlay-panel { position: absolute; top: 50px; right: 20px; width: 320px; background: var(--dark); border: 1px solid var(--brand); box-shadow: 0 0 30px rgba(0,0,0,0.9); z-index: 100; display: none; padding: 15px; }
+        .icon-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; }
+        .icon-sq { padding: 8px; background: var(--panel); border: 1px solid var(--border); text-align: center; cursor: pointer; }
+        .icon-sq:hover { border-color: var(--brand); transform: scale(1.1); }
+    </style>
+</head>
+<body ondragover="e=>e.preventDefault()" ondrop="handleDrop(event)">
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h1>TERMINAL v18</h1>
+            <button class="tool-btn" style="color: var(--brand); font-weight:700;" onclick="clearAll()">PURGE</button>
+        </div>
+        
+        <div class="form-section">
+            <div class="form-group">
+                <label>Guide Title</label>
+                <input type="text" id="meta-title" placeholder="Operation Name">
+            </div>
+            
+            <div class="field-row" style="margin-bottom:12px;">
+                <div style="flex:1;">
+                    <label>Unique ID (Slug)</label>
+                    <input type="text" id="meta-id">
+                </div>
+                <button class="lock-btn locked" id="id-lock" onclick="toggleIdLock()">🔒</button>
+            </div>
+
+            <div class="form-group">
+                <label>Description</label>
+                <textarea id="meta-desc" rows="2"></textarea>
+            </div>
+
+            <div style="display: flex; gap: 6px;">
+                <div class="form-group" style="flex: 1;">
+                    <label>Category</label>
+                    <select id="meta-cat" onchange="checkNewCategory(this)">
+                        <option value="Basics">Basics</option>
+                        <option value="Combat">Combat</option>
+                        <option value="Logistics">Logistics</option>
+                        <option value="Strategy">Strategy</option>
+                        <option value="[NEW]">-- New --</option>
+                    </select>
+                </div>
+                <div class="form-group" style="flex: 1;">
+                    <label>Difficulty</label>
+                    <select id="meta-diff">
+                        <option value="Beginner">Beginner</option>
+                        <option value="Intermediate">Intermediate</option>
+                        <option value="Expert">Expert</option>
+                        <option value="Combat">Combat</option>
+                    </select>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 6px; align-items: flex-end;">
+                <div class="form-group" style="flex: 1;">
+                    <label>Icon <span style="cursor:pointer; color:var(--gold);" onclick="toggleOverlay('icon-panel')">▼</span></label>
+                    <input type="text" id="meta-icon" value="🚀">
+                </div>
+                <div class="form-group" style="flex: 1; padding-bottom: 12px;">
+                    <label class="checkbox-group">
+                        <input type="checkbox" id="meta-pinned"> PINNED
+                    </label>
+                </div>
+            </div>
+
+            <button class="btn btn-gold" onclick="downloadFile()">💾 DOWNLOAD .MD</button>
+            <button class="btn" onclick="openGitHub()">📤 UPLOAD TO REPO</button>
+
+            <div class="tactical-box">
+                <h3>Tactical Manual</h3>
+                <p><strong>1. Category:</strong> Use <code>-- New --</code> to create one.</p>
+                <p><strong>2. Icons:</strong> Click ▼ to choose tactical symbols.</p>
+                <p><strong>3. Pinning:</strong> Active <code>PINNED</code> badges guides at top.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="main">
+        <div class="toolbar">
+            <button class="tool-btn" onclick="undo()">⟲</button>
+            <button class="tool-btn" onclick="redo()">⟳</button>
+            <div style="width: 1px; height: 15px; background: var(--border); margin: 0 5px;"></div>
+            <button class="tool-btn" onclick="insertMD('**', '**')">B</button>
+            <button class="tool-btn" onclick="insertMD('*', '*')">I</button>
+            <button class="tool-btn" onclick="insertMD('## ', '')">H2</button>
+            <button class="tool-btn gold" onclick="insertImagePrompt()">ADV IMG</button>
+            <button class="tool-btn gold" onclick="insertSnippet('tip')">TIP</button>
+            <button class="tool-btn gold" onclick="insertMD('\n<div class=&quot;clearfix&quot;></div>\n\n', '')">FIX WRAP</button>
+            <div style="flex-grow: 1;"></div>
+            <div id="status-text" style="font-family: 'Share Tech Mono'; font-size: 0.5rem; color: var(--text-dim);">SYNC_OK</div>
+        </div>
+
+        <div class="editor-container">
+            <div class="editor-pane"><textarea id="editor" spellcheck="false" onscroll="syncScroll('editor', 'preview-wrapper')"></textarea></div>
+            <div class="preview-pane">
+                <div id="preview-wrapper" onscroll="syncScroll('preview-wrapper', 'editor')">
+                    <div class="guide-content">
+                        <h1 id="p-title">Guide Title</h1>
+                        <div class="g-meta">
+                            <span id="p-cat">CATEGORY</span>
+                            <span id="p-diff">DIFFICULTY</span>
+                            <span id="p-time">~1 MIN</span>
+                            <span id="p-pinned"></span>
+                        </div>
+                        <div id="preview"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="icon-panel" class="overlay-panel" style="width: 240px;">
+            <h3>Tactical Icons</h3>
+            <div class="icon-grid" id="icon-grid"></div>
+        </div>
+    </div>
+
+    <script>
+        const editor = document.getElementById('editor'), preview = document.getElementById('preview');
+        const idInput = document.getElementById('meta-id'), titleInput = document.getElementById('meta-title');
+        const ICONS = ['🚀', '⚔️', '🛡️', '🛰️', '📦', '💰', '📡', '📊', '🔥', '⚠️', '🌌', '📜', '🛸', '🚩', '🔍', '🎖️'];
+        
+        let history = [], historyStep = -1, idLocked = true;
+
+        function init() {
+            idInput.disabled = true;
+            ICONS.forEach(i => {
+                const d = document.createElement('div'); d.className = 'icon-sq'; d.textContent = i;
+                d.onclick = () => { document.getElementById('meta-icon').value = i; toggleOverlay('icon-panel'); updatePreview(); }; document.getElementById('icon-grid').appendChild(d);
+            });
+            const saved = localStorage.getItem('grom_terminal_v18');
+            if (saved) {
+                const data = JSON.parse(saved);
+                editor.value = data.c || ''; titleInput.value = data.t || ''; idInput.value = data.i || '';
+                document.getElementById('meta-cat').value = data.cat || 'Basics';
+                document.getElementById('meta-pinned').checked = data.p || false;
+            } else { loadTemplate('report'); }
+            updatePreview(); saveToHistory();
+        }
+
+        function toggleIdLock() { idLocked = !idLocked; idInput.disabled = idLocked; document.getElementById('id-lock').textContent = idLocked ? '🔒' : '🔗'; if(!idLocked) syncId(); }
+        function syncId() { if(!idLocked) idInput.value = titleInput.value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, ''); }
+
+        editor.addEventListener('input', () => { updatePreview(); saveState(); saveToHistory(); });
+        titleInput.addEventListener('input', () => { syncId(); updatePreview(); });
+        ['meta-cat', 'meta-diff', 'meta-icon', 'meta-pinned'].forEach(id => document.getElementById(id).addEventListener('input', updatePreview));
+
+        function saveState() { localStorage.setItem('grom_terminal_v18', JSON.stringify({c: editor.value, t: titleInput.value, i: idInput.value, cat: document.getElementById('meta-cat').value, p: document.getElementById('meta-pinned').checked})); }
+        function saveToHistory() {
+            if (historyStep < history.length - 1) history = history.slice(0, historyStep + 1);
+            history.push({ c: editor.value, t: titleInput.value, i: idInput.value });
+            if (history.length > 30) history.shift(); else historyStep++;
+        }
+        function undo() { if (historyStep > 0) { historyStep--; applyState(history[historyStep]); } }
+        function redo() { if (historyStep < history.length - 1) { historyStep++; applyState(history[historyStep]); } }
+        function applyState(s) { editor.value = s.c; titleInput.value = s.t; idInput.value = s.i; updatePreview(); }
+
+        function updatePreview() {
+            preview.innerHTML = marked.parse(editor.value.replace(/images\//g, '../../images/'));
+            document.getElementById('p-title').textContent = titleInput.value || 'Guide Title';
+            document.getElementById('p-cat').textContent = document.getElementById('meta-cat').value.toUpperCase();
+            document.getElementById('p-diff').textContent = document.getElementById('meta-diff').value.toUpperCase();
+            document.getElementById('p-pinned').innerHTML = document.getElementById('meta-pinned').checked ? '<span class="badge-gold">PINNED</span>' : '';
+            const words = editor.value.trim().split(/\s+/).filter(w => w.length > 0).length;
+            document.getElementById('p-time').textContent = `~${Math.max(1, Math.ceil(words/200))} MIN`;
+        }
+
+        function checkNewCategory(sel) {
+            if(sel.value === '[NEW]') {
+                const n = prompt("New Category Name:");
+                if(n) { const o = document.createElement('option'); o.value = n; o.textContent = n; sel.insertBefore(o, sel.options[sel.options.length-1]); sel.value = n; } else sel.selectedIndex = 0;
+                updatePreview();
+            }
+        }
+
+        function insertMD(pre, suf) { const s = editor.selectionStart, e = editor.selectionEnd, txt = editor.value; editor.value = txt.substring(0, s) + pre + txt.substring(s, e) + suf + txt.substring(e); editor.focus(); updatePreview(); saveToHistory(); saveState(); }
+        function insertSnippet(type) { if(type === 'tip') insertMD(`\n> **TIP:** Mission advice here.\n\n`, ""); }
+        function insertImagePrompt() { const n = prompt("Image Filename:", "RedBearLogo.png"); if(!n) return; const s = prompt("Size: 1:S, 2:M, 3:L, 4:F", "2"), a = prompt("Align: 1:L, 2:R, 3:C, 4:N", "1"); const sM = {"1":"img-small","2":"img-medium","3":"img-large","4":""}, aM = {"1":"img-left","2":"img-right","3":"img-center","4":""}; insertMD(`<div class="${sM[s]} ${aM[a]}">\n\n![Intel](images/${n})\n\n</div>\n\n`, ""); }
+        function loadTemplate(k) { if(k==='report') { titleInput.value = "Mission Intel: [Target]"; editor.value = `## Objective\nExplain the goal.\n\n## Data\n<div class="img-small img-left">\n\n![Yuri Grom](images/RedBearLogo.png)\n\n</div>\n\nCoordinates here.\n\n<div class="clearfix"></div>`; syncId(); updatePreview(); } }
+        function openGitHub() { window.open('https://github.com/EliteGrom/EliteGrom.github.io/upload/master/guides', '_blank'); }
+        function toggleOverlay(id) { const el = document.getElementById(id); el.style.display = el.style.display === 'block' ? 'none' : 'block'; }
+        function syncScroll(sId, tId) { const s = document.getElementById(sId), t = document.getElementById(tId); t.scrollTop = (s.scrollTop / (s.scrollHeight - s.clientHeight)) * (t.scrollHeight - t.clientHeight); }
+        function clearAll() { if(confirm("Purge?")) { editor.value=''; titleInput.value=''; syncId(); updatePreview(); saveState(); } }
+        function downloadFile() {
+            const words = editor.value.trim().split(/\s+/).filter(w => w.length > 0).length;
+            const time = `~${Math.max(1, Math.ceil(words/200))} min`;
+            const meta = { id: idInput.value, title: titleInput.value, description: document.getElementById('meta-desc').value, category: document.getElementById('meta-cat').value, diff: document.getElementById('meta-diff').value, time: time, up: "3312.03.09", icon: document.getElementById('meta-icon').value, pinned: document.getElementById('meta-pinned').checked };
+            let md = "---\n"; for(let k in meta) md += `${k}: ${typeof meta[k] === 'string' ? '"'+meta[k]+'"' : meta[k]}\n`;
+            md += "---\n\n" + editor.value; const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([md])); a.download = `${idInput.value || 'intel'}.md`; a.click();
+        }
+        init();
+    </script>
+</body>
+</html>
